@@ -39,6 +39,7 @@ public class FragmentsContacts extends Fragment {
     private List<ModelContact> contactList;
 
     public FragmentsContacts() {
+        // some changes
     }
 
     @Nullable
