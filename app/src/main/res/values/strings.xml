@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">My_Contacts</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="welcome_back">Welcome</string>
+    <string name="subtitle">Manage your contacts</string>
+
+    <string name="Sign_up_title">Create Account</string>
+    <string name="name">Name</string>
+    <string name="already_have_account">Already have a account?</string>
+
+    <string name="create_new_contact">Create new contact</string>
+
+</resources>

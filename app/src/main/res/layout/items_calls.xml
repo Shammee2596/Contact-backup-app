@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="horizontal"
+    android:weightSum="10">
+
+    <Button
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_person"/>
+
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="8"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/contact_call_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/call_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="date"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:id="@+id/call_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="duration"
+            android:textSize="16sp"
+            />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/call_button"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_phone"/>
+
+</LinearLayout>
