@@ -84,7 +84,7 @@ public class Fragment_Calls extends Fragment {
 
             list.add(new ModelCalls(name1,cursor.getString(number),cursor.getString(duration),day+", "+time+" "+month+" "));
 
-            Log.d("Mic", cursor.getString(number));
+            /*Log.d("Mic", cursor.getString(number));*/
         }
 
 

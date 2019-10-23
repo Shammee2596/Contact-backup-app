@@ -60,7 +60,6 @@ public class AddNewContact extends AppCompatActivity {
                 contact.setEmail(email.getText().toString().trim());
                 contact.setLabel(label.getText().toString().trim());
                 databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(contact);
-                databaseReference.keepSynced(true);
                 Intent i = new Intent(AddNewContact.this, MainActivity.class);
                 startActivity(i);
                 Toast.makeText(AddNewContact.this, "Contact saved successfully", Toast.LENGTH_LONG).show();
