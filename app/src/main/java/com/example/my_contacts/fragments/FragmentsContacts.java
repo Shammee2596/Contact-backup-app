@@ -40,8 +40,8 @@ public class FragmentsContacts extends Fragment {
     private RecyclerView recyclerView;
     ModelContact contact;
     DatabaseReference databaseReference;
-    private List<ModelContact> contactList = new ArrayList<>();
-    List<ModelContact> list;
+    private List<ModelContact> contactList2 = new ArrayList<>();
+    List<ModelContact> contactList1 = new ArrayList<>();
 
     public FragmentsContacts() {
         // some changes
@@ -57,7 +57,6 @@ public class FragmentsContacts extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), AddNewContact.class);
-                // hhh
                 startActivity(intent);
             }
         });
@@ -65,18 +64,17 @@ public class FragmentsContacts extends Fragment {
         RecyclerView.LayoutManager layoutManager =new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        contactList = getContacts();
-        List<ModelContact> contactList1 = new ArrayList<>();
-        contactList1.addAll(displayContactList());
+        contactList2 = getContacts();
+        displayContactList(new ContactStatus() {
+            @Override
+            public void dataLoaded(List<ModelContact> contactList) {
+                contactList1.addAll(contactList);
+                contactList1.addAll(contactList2);
+                Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
+                recyclerView.setAdapter(contactAapter);
+            }
+        });
 
-
-        System.out.println(contactList1.size());
-        contactList1.addAll(contactList);
-        System.out.println(contactList1.size());
-
-        Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
-        displayContactList();
-        recyclerView.setAdapter(contactAapter);
         return v;
     }
 
@@ -84,14 +82,12 @@ public class FragmentsContacts extends Fragment {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Contact");
         List<ModelContact> contactList = new ArrayList<>();
-        displayContactList();
         Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,null,null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
         cursor.moveToFirst();
         while (cursor.moveToNext()){
             String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String phone =  cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            //String email = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
             String emailAddress = "";
             String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
 
@@ -116,39 +112,31 @@ public class FragmentsContacts extends Fragment {
 
 
 
-    public List<ModelContact> displayContactList(){
+    public void displayContactList(final ContactStatus contactStatus){
+        final List<ModelContact> list;
         list = new ArrayList<>();
         contact = new ModelContact();
         databaseReference = FirebaseDatabase.getInstance().getReference("Contact")
                 .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.keepSynced(true); // to show the data offline
-
         databaseReference.addValueEventListener(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    list.clear();
-
+                list.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     contact = postSnapshot.getValue(ModelContact.class); //getting contacts
                     list.add(contact); //adding contacts to the list
-
                 }
-                System.out.println(list.size());
-                System.out.println("hi");
-                /*Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList);
-                recyclerView.setAdapter(contactAapter);*///attaching adapter to the listview
+                contactStatus.dataLoaded(list);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
-
         });
-        System.out.println(list.size());
-        return  list;
+    }
+    public interface ContactStatus{
+        public void dataLoaded(List<ModelContact>contactList);
     }
 }
 
