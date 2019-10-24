@@ -42,6 +42,7 @@ public class FragmentsContacts extends Fragment {
     DatabaseReference databaseReference;
     private List<ModelContact> contactList2 = new ArrayList<>();
     List<ModelContact> contactList1 = new ArrayList<>();
+    AddNewContact addNewContact;
 
     public FragmentsContacts() {
         // some changes
@@ -68,13 +69,20 @@ public class FragmentsContacts extends Fragment {
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
+
                 contactList1.addAll(contactList);
+
+                for(ModelContact model : contactList1) {
+                    System.out.println(model.getName());
+                    System.out.println(model.getNumber());
+                }
                 contactList1.addAll(contactList2);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
+                contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
+
             }
         });
-
         return v;
     }
 
@@ -82,30 +90,51 @@ public class FragmentsContacts extends Fragment {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Contact");
         List<ModelContact> contactList = new ArrayList<>();
+        contactList.clear();
         Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,null,null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
-        cursor.moveToFirst();
-        while (cursor.moveToNext()){
-            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String phone =  cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            String emailAddress = "";
-            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
 
-            Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
-                    ContactsContract.CommonDataKinds.Email.CONTACT_ID +  " = ?", new String[]{contactId},null, null);
+        if (cursor != null){
+            cursor.moveToFirst();
+           do{
 
-            while (emails.moveToNext())
-            {
-                emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-            }
-            contactList.add(new ModelContact(name,phone,emailAddress));
-           // databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
-                    //(new ModelContact(name,phone,emailAddress));
-            emails.close();
+               // Get contact display name.
+                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phone =  cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                // Get contact phone type.
+               String phoneTypeStr = "Mobile";
+               int phoneTypeColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
+               int phoneTypeInt = cursor.getInt(phoneTypeColumnIndex);
+               if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_HOME)
+               {
+                   phoneTypeStr = "Home";
+               }else if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+               {
+                   phoneTypeStr = "Mobile";
+               }else if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_WORK)
+               {
+                   phoneTypeStr = "Work";
+               }
+
+               String emailAddress = "";
+                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+
+                Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID +  " = ?", new String[]{contactId},null, null);
+
+                while (emails.moveToNext())
+                {
+                    emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                }
+                contactList.add(new ModelContact(name,phone,emailAddress));
+                // databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
+                //(new ModelContact(name,phone,emailAddress));
+                emails.close();
+            } while (cursor.moveToNext());
+            cursor.close();
         }
 
-
-        cursor.close();
 
         return contactList;
     }
@@ -116,6 +145,7 @@ public class FragmentsContacts extends Fragment {
         final List<ModelContact> list;
         list = new ArrayList<>();
         contact = new ModelContact();
+        addNewContact = new AddNewContact();
         databaseReference = FirebaseDatabase.getInstance().getReference("Contact")
                 .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.keepSynced(true); // to show the data offline
