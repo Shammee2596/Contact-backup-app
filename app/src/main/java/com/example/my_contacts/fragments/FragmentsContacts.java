@@ -81,8 +81,10 @@ public class FragmentsContacts extends Fragment {
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
 
+
             }
         });
+
         return v;
     }
 
@@ -158,6 +160,7 @@ public class FragmentsContacts extends Fragment {
                     list.add(contact); //adding contacts to the list
                 }
                 contactStatus.dataLoaded(list);
+                System.out.println("shdgjfsdjmdfh"+list.size());
             }
 
             @Override
