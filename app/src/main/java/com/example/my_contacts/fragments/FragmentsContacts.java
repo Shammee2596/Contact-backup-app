@@ -113,25 +113,29 @@ public class FragmentsContacts extends Fragment {
                    phoneTypeStr = "Work";
                }
 
-               String emailAddress = "";
+               String emailAddress = null;
+               String emailType = "";
                 String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID +  " = ?", new String[]{contactId},null, null);
 
-                while (emails.moveToNext())
-                {
-                    emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                    System.out.println("Jamila"+emailAddress);
+                if(emails.moveToFirst()) {
+                    System.out.println("Jamila" + emailAddress);
+                    while (emails.moveToNext()) {
+                        emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        emailType = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+
+                        // break;
+
+                    }
                 }
 
-                new ModelContact().setEmail(emailAddress);
-                //System.out.println("Jamila"+new ModelContact().getEmail());
-                contactList.add(new ModelContact(name,phone,emailAddress));
-
+               System.out.println("Jamila2 kdjfmvdxdxjfghhkjkll::: "+emailAddress);
+               contactList.add(new ModelContact(name, phone, emailAddress));
 
                /* databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
                 (new ModelContact(name,phone,emailAddress));*/
-                emails.close();
+               emails.close();
             } while (cursor.moveToNext());
             cursor.close();
         }
