@@ -70,18 +70,11 @@ public class FragmentsContacts extends Fragment {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
 
-                contactList1.addAll(contactList);
-
-                for(ModelContact model : contactList1) {
-                    System.out.println(model.getName());
-                    System.out.println(model.getNumber());
-                }
                 contactList1.addAll(contactList2);
+                contactList1.addAll(contactList);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
-
-
             }
         });
 
@@ -121,7 +114,6 @@ public class FragmentsContacts extends Fragment {
 
                String emailAddress = "";
                 String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-
                 Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID +  " = ?", new String[]{contactId},null, null);
 
@@ -129,15 +121,15 @@ public class FragmentsContacts extends Fragment {
                 {
                     emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                 }
+
                 contactList.add(new ModelContact(name,phone,emailAddress));
-                // databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
-                //(new ModelContact(name,phone,emailAddress));
+                System.out.println(emailAddress);
+               /* databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
+                (new ModelContact(name,phone,emailAddress));*/
                 emails.close();
             } while (cursor.moveToNext());
             cursor.close();
         }
-
-
         return contactList;
     }
 
@@ -160,9 +152,7 @@ public class FragmentsContacts extends Fragment {
                     list.add(contact); //adding contacts to the list
                 }
                 contactStatus.dataLoaded(list);
-                System.out.println("shdgjfsdjmdfh"+list.size());
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }

@@ -1,6 +1,7 @@
 package com.example.my_contacts.adapters;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,16 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.my_contacts.ContactDeatils;
 import com.example.my_contacts.MainActivity;
 import com.example.my_contacts.R;
+import com.example.my_contacts.fragments.FragmentsContacts;
 import com.example.my_contacts.models.ModelContact;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,11 +39,9 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
     private LayoutInflater inflater;
     private Context context;
 
-
     private List<ModelContact> contactList;
 
     public Contact_rv_adapter(Context context, List<ModelContact> contactList) {
-
         this.context = context;
         this.contactList = contactList;
     }
@@ -70,6 +73,24 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
                  }
              }
          });
+
+         viewHolder.item_contact.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+
+                // Toast.makeText(context, String.valueOf(viewHolder.getAdapterPosition()), Toast.LENGTH_LONG).show();
+                 String c_name=  contactList.get(viewHolder.getAdapterPosition()).getName();
+                 String c_number=  contactList.get(viewHolder.getAdapterPosition()).getNumber();
+                 String c_email=  contactList.get(viewHolder.getAdapterPosition()).getEmail();
+
+                 Intent intent = new Intent(context,ContactDeatils.class);
+                 intent.putExtra("name",c_name);
+                 intent.putExtra("number",c_number);
+                 intent.putExtra("email",c_email);
+                 System.out.println("kjhsdfdfjkldsfjk"+c_email);
+                 context.startActivity(intent);
+             }
+         });
         return viewHolder;
     }
 
@@ -97,9 +118,12 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
         TextView name, number;
         Button button;
 
+        LinearLayout item_contact;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            item_contact = itemView.findViewById(R.id.contact_item);
             name = itemView.findViewById(R.id.contact_name);
             number = itemView.findViewById(R.id.number);
             button = itemView.findViewById(R.id.contact_button);

@@ -60,7 +60,8 @@ public class AddNewContact extends AppCompatActivity {
                 contact.setEmail(email.getText().toString().trim());
                 contact.setLabel(label.getText().toString().trim());
                 databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(contact);
-                addContactToSystemDatabase(fName.getText().toString().trim(),number.getText().toString().trim(),"mobile");
+                addContactToSystemDatabase(fName.getText().toString().trim(),number.getText().toString().trim(),"mobile",
+                        email.getText().toString().trim());
                 Intent i = new Intent(AddNewContact.this, MainActivity.class);
                 startActivity(i);
                 Toast.makeText(AddNewContact.this, "Contact saved successfully", Toast.LENGTH_LONG).show();
@@ -69,11 +70,12 @@ public class AddNewContact extends AppCompatActivity {
         });
     }
 
-    public void addContactToSystemDatabase(String name, String phone,String phoneType){
+    public void addContactToSystemDatabase(String name, String phone,String phoneType,String email){
         Uri contactsUri = ContactsContract.Data.CONTENT_URI;
         long rowContactId = getRawContactId();                      // Add an empty contact and get the generated id.
         insertContactDisplayName(contactsUri, rowContactId, name);// Add contact name data.
         insertContactPhoneNumber(contactsUri, rowContactId, phone, phoneType);
+        insertContactEmail(contactsUri,rowContactId,email);
         finish();
     }
 
@@ -82,6 +84,13 @@ public class AddNewContact extends AppCompatActivity {
         Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, contentValues);
         long ret = ContentUris.parseId(rawContactUri); // Get the newly created contact raw id.
         return ret;
+    }
+    private void insertContactEmail(Uri contactsUri, long rawContactId, String email){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+        contentValues.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
+        contentValues.put(ContactsContract.CommonDataKinds.Email.ADDRESS, email);   // Put contact display name value.
+        getContentResolver().insert(contactsUri, contentValues);
     }
 
     private void insertContactDisplayName(Uri contactsUri, long rawContactId, String displayName) {
@@ -122,7 +131,4 @@ public class AddNewContact extends AppCompatActivity {
         getContentResolver().insert(addContactsUri, contentValues);
 
     }
-
-
-
 }
