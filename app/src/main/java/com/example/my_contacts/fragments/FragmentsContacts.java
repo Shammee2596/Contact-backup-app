@@ -70,8 +70,9 @@ public class FragmentsContacts extends Fragment {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
 
-                contactList1.addAll(contactList2);
+
                 contactList1.addAll(contactList);
+                contactList1.addAll(contactList2);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
@@ -120,10 +121,14 @@ public class FragmentsContacts extends Fragment {
                 while (emails.moveToNext())
                 {
                     emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                    System.out.println("Jamila"+emailAddress);
                 }
 
+                new ModelContact().setEmail(emailAddress);
+                //System.out.println("Jamila"+new ModelContact().getEmail());
                 contactList.add(new ModelContact(name,phone,emailAddress));
-                System.out.println(emailAddress);
+
+
                /* databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
                 (new ModelContact(name,phone,emailAddress));*/
                 emails.close();

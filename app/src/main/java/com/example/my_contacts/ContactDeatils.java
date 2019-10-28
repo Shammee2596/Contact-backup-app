@@ -43,7 +43,7 @@ public class ContactDeatils extends AppCompatActivity {
 
         tvname.setText(name);
         tvphone.setText(number);
-        tvmail.setText(email);
+        tvmail.setText("email:"+email);
 
     }
 
