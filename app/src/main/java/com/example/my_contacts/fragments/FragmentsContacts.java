@@ -87,57 +87,48 @@ public class FragmentsContacts extends Fragment {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Contact");
         List<ModelContact> contactList = new ArrayList<>();
         contactList.clear();
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,null,null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
+        String[] PROJECTION = new String[] { ContactsContract.RawContacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.PHOTO_ID,
+                ContactsContract.CommonDataKinds.Email.DATA,
+                ContactsContract.CommonDataKinds.Photo.CONTACT_ID
+        };
+        String[] projection = new String[]{ContactsContract.RawContacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+        String order = "CASE WHEN "
+                + ContactsContract.Contacts.DISPLAY_NAME
+                + " NOT LIKE '%@%' THEN 1 ELSE 2 END, "
+                + ContactsContract.Contacts.DISPLAY_NAME
+                + ", "
+                + ContactsContract.CommonDataKinds.Email.DATA
+                + " COLLATE NOCASE";
+        String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
+        Cursor cursorEmail = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, filter, null, order);
+        Cursor cursorPhone = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection,null,null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
 
-        if (cursor != null){
-            cursor.moveToFirst();
+        if (cursorEmail != null && cursorPhone != null){
+            cursorEmail.moveToFirst();
+            cursorPhone.moveToFirst();
            do{
 
                // Get contact display name.
-                String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String phone =  cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                // Get contact phone type.
-               String phoneTypeStr = "Mobile";
-               int phoneTypeColumnIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
-               int phoneTypeInt = cursor.getInt(phoneTypeColumnIndex);
-               if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_HOME)
-               {
-                   phoneTypeStr = "Home";
-               }else if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
-               {
-                   phoneTypeStr = "Mobile";
-               }else if(phoneTypeInt== ContactsContract.CommonDataKinds.Phone.TYPE_WORK)
-               {
-                   phoneTypeStr = "Work";
-               }
-
-               String emailAddress = null;
-               String emailType = "";
-                String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID +  " = ?", new String[]{contactId},null, null);
-
-                if(emails.moveToFirst()) {
-                    System.out.println("Jamila" + emailAddress);
-                    while (emails.moveToNext()) {
-                        emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        emailType = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-
-                        // break;
-
-                    }
-                }
-
-               System.out.println("Jamila2 kdjfmvdxdxjfghhkjkll::: "+emailAddress);
-               contactList.add(new ModelContact(name, phone, emailAddress));
+                //String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                //String phone =  cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = cursorEmail.getString(1);
+                String number = cursorPhone.getString(2);
+                String email = cursorEmail.getString(3);
+                Log.e("Test", "Email: "+email+"  Name: "+name+"  Number: "+number);
 
                /* databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue
                 (new ModelContact(name,phone,emailAddress));*/
-               emails.close();
-            } while (cursor.moveToNext());
-            cursor.close();
+
+               contactList.add(new ModelContact(name, number,email));
+            } while (cursorEmail.moveToNext() && cursorPhone.moveToNext());
+            cursorEmail.close();
+            cursorPhone.close();
         }
         return contactList;
     }

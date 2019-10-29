@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.my_contacts.models.User;
@@ -32,7 +33,19 @@ public class Register extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
+        backToSignIn();
         createNewAccount();
+    }
+    private void backToSignIn(){
+        TextView signIn;
+        signIn= findViewById(R.id.signUpToLogin);
+        signIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent regIntent = new Intent(Register.this, StartActivity.class);
+                startActivity(regIntent);
+            }
+        });
     }
     private void createNewAccount(){
         email = (EditText)findViewById(R.id.SignUpEmail);
@@ -94,11 +107,7 @@ public class Register extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                     finish();
 
-                }/*else{
-                    Toast.makeText(Register.this, "Authentication failed.",
-                            Toast.LENGTH_LONG).show();
-
-                }*/
+                }
             }
         });
 

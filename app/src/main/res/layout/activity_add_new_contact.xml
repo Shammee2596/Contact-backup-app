@@ -5,10 +5,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_centerInParent="true"
         android:layout_marginLeft="26dp"
         android:layout_marginRight="26dp"
-        android:layout_centerInParent="true">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
@@ -19,6 +19,15 @@
             android:textSize="30dp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/addImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/img"
+            android:layout_marginLeft="150dp"
+            />
+
 
         <EditText
             android:id="@+id/createContactFName"
@@ -26,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:hint="First name" />
+
         <EditText
             android:id="@+id/createContactLName"
             android:layout_width="match_parent"
@@ -54,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:hint="Label" />
+
         <Button
             android:id="@+id/createContactButton"
             android:layout_width="match_parent"

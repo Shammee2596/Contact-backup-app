@@ -5,6 +5,7 @@ public class ModelContact {
     private String email;
     private String label;
     private  String lastName;
+    private  String imageUrl;
 
     public ModelContact(){
 
@@ -14,6 +15,14 @@ public class ModelContact {
         this.name = name;
         this.number = number;
         this.email = email;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getLastName() {
