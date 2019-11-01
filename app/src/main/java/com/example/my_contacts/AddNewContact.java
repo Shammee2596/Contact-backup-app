@@ -47,7 +47,7 @@ public class AddNewContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_contact);
 
-        image = findViewById(R.id.addImage);
+        image = findViewById(R.id.addImage1);
         fName = findViewById(R.id.createContactFName);
         lName = findViewById(R.id.createContactLName);
         number = findViewById(R.id.createContactNumber);
@@ -95,8 +95,8 @@ public class AddNewContact extends AppCompatActivity {
                 contact.setEmail(email.getText().toString().trim());
                 contact.setLabel(label.getText().toString().trim());
                 databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(contact);
-                addContactToSystemDatabase(fName.getText().toString().trim(),number.getText().toString().trim(),"mobile",
-                        email.getText().toString().trim());
+                //addContactToSystemDatabase(fName.getText().toString().trim(),number.getText().toString().trim(),"mobile",
+                  //      email.getText().toString().trim());
                 Intent i = new Intent(AddNewContact.this, MainActivity.class);
                 startActivity(i);
                 Toast.makeText(AddNewContact.this, "Contact saved successfully", Toast.LENGTH_LONG).show();

@@ -65,14 +65,13 @@ public class FragmentsContacts extends Fragment {
         RecyclerView.LayoutManager layoutManager =new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        contactList2 = getContacts();
+        contactList2 = getContacts1();
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
 
-
-                contactList1.addAll(contactList);
                 contactList1.addAll(contactList2);
+                contactList1.addAll(contactList);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
@@ -82,11 +81,76 @@ public class FragmentsContacts extends Fragment {
         return v;
     }
 
+    private List<ModelContact> getContacts1(){
+        List<ModelContact> contactList = new ArrayList<>();
+        String emailAddress= null;
+        String phoneNumber="";
+        String name;
+        ModelContact modelContact = new ModelContact();
+
+        final String[] PROJECTION = {
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.HAS_PHONE_NUMBER
+        };
+
+
+
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
+                null, null, null);
+        while(cursor.moveToNext())
+        {
+            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+            name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+            String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+
+            if ( hasPhone.equalsIgnoreCase("1"))
+                hasPhone = "true";
+            else
+                hasPhone = "false" ;
+
+            if (Boolean.parseBoolean(hasPhone))
+            {
+                Cursor phones = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " =?",
+                        new String[]{contactId}, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
+
+                while (phones.moveToNext())
+                {
+                    phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+
+                phones.close();
+            }
+
+            // Find Email Addresses
+            Cursor emails = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                    null,ContactsContract.CommonDataKinds.Email.CONTACT_ID + " =" +contactId,
+                    null, null);
+
+
+
+            while (emails.moveToNext()) {
+                emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+            }
+            emails.close();
+
+            contactList.add(new ModelContact(name,phoneNumber,emailAddress));
+            Log.e("Test", "Email: "+emailAddress+"  Name: "+name+"  Number: "+phoneNumber);
+        }
+
+        cursor.close();
+        return contactList;
+    }
+
     private List<ModelContact> getContacts(){
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Contact");
         List<ModelContact> contactList = new ArrayList<>();
         contactList.clear();
+
         String[] PROJECTION = new String[] { ContactsContract.RawContacts._ID,
                 ContactsContract.Contacts.DISPLAY_NAME,
                 ContactsContract.Contacts.PHOTO_ID,
@@ -105,11 +169,12 @@ public class FragmentsContacts extends Fragment {
                 + ContactsContract.CommonDataKinds.Email.DATA
                 + " COLLATE NOCASE";
         String filter = ContactsContract.CommonDataKinds.Email.DATA + " NOT LIKE ''";
-        Cursor cursorEmail = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, filter, null, order);
+        Cursor cursorEmail = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, null, null, order);
         Cursor cursorPhone = getContext().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 projection,null,null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
 
-        if (cursorEmail != null && cursorPhone != null){
+
+        if (cursorPhone != null){
             cursorEmail.moveToFirst();
             cursorPhone.moveToFirst();
            do{
