@@ -6,11 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
@@ -47,19 +51,19 @@ public class AddNewContact extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_contact);
 
-        image = findViewById(R.id.addImage1);
+        //image = findViewById(R.id.addImage1);
         fName = findViewById(R.id.createContactFName);
         lName = findViewById(R.id.createContactLName);
         number = findViewById(R.id.createContactNumber);
         email = findViewById(R.id.createContactEmail);
         label = findViewById(R.id.createContactLabel);
         saveButon = findViewById(R.id.createContactButton);
-        image.setOnClickListener(new View.OnClickListener() {
+        /*image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openFileChooser();
             }
-        });
+        });*/
         addContactToDatabase();
     }
 
@@ -95,8 +99,9 @@ public class AddNewContact extends AppCompatActivity {
                 contact.setEmail(email.getText().toString().trim());
                 contact.setLabel(label.getText().toString().trim());
                 databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(contact);
-                //addContactToSystemDatabase(fName.getText().toString().trim(),number.getText().toString().trim(),"mobile",
-                  //      email.getText().toString().trim());
+
+                addContactToSystemDatabase(fName.getText().toString(),number.getText().toString(),
+                        "mobile", email.getText().toString());
                 Intent i = new Intent(AddNewContact.this, MainActivity.class);
                 startActivity(i);
                 Toast.makeText(AddNewContact.this, "Contact saved successfully", Toast.LENGTH_LONG).show();
@@ -122,9 +127,10 @@ public class AddNewContact extends AppCompatActivity {
     }
     private void insertContactEmail(Uri contactsUri, long rawContactId, String email){
         ContentValues contentValues = new ContentValues();
+        contentValues.clear();
         contentValues.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
-        contentValues.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-        contentValues.put(ContactsContract.CommonDataKinds.Email.ADDRESS, email);   // Put contact display name value.
+        contentValues.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+        contentValues.put(ContactsContract.CommonDataKinds.Email.DATA, email);   // Put contact display name value.
         getContentResolver().insert(contactsUri, contentValues);
     }
 
@@ -133,7 +139,7 @@ public class AddNewContact extends AppCompatActivity {
         contentValues.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
         // Each contact must has an mime type to avoid java.lang.IllegalArgumentException: mimetype is required error.
         contentValues.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
-        contentValues.put(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME, displayName);   // Put contact display name value.
+        contentValues.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName);   // Put contact display name value.
         getContentResolver().insert(contactsUri, contentValues);
     }
 
