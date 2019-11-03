@@ -102,8 +102,6 @@ public class FragmentsContacts extends Fragment {
                 ContactsContract.Contacts.HAS_PHONE_NUMBER
         };
 
-
-
         Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
                 null, null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
         if (cursor.getCount() > 0) {
