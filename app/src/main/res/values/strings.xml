@@ -14,4 +14,15 @@
 
     <string name="create_new_contact">Create new contact</string>
 
+    <!-- Navigation menu -->
+    <string name="menu_login">Login</string>
+    <string name="menu_import">Import</string>
+    <string name="menu_sync">Sync</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_communicate">Communicate</string>
+    <string name="menu_share">Share</string>
+
+    <string name="navigation_drawer_open">Open Navigation Drawer</string>
+    <string name="navigation_drawer_close">Close Navigation Drawer</string>
+
 </resources>

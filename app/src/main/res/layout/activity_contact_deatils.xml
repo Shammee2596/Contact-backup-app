@@ -1,29 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/tvname"
-        android:textColor="#000"
-        android:text="Name:"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/tvphone"
-        android:textColor="#000"
-        android:text="Phone:"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/tvmail"
-        android:textColor="#000"
-        android:text="Email:"/>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/profile_image"
+        android:src="@drawable/ic_person"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/profile_displayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="15dp"
+        android:text="Name"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/profile_number"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_below="@+id/profile_displayName"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/profile_Email"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_below="@+id/profile_number"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/profile_edit"
+        android:background="@color/colorAccent"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="#fff"
+        android:text="Edit"
+        android:layout_marginBottom="21dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <!--<TextView
+        android:id="@+id/profile_status"
+        android:layout_width="wrap_content"
+        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:text="Current User Status"
+        android:layout_marginTop="17dp"
+        android:layout_below="@+id/profile_displayName"
+        android:layout_centerHorizontal="true" />-->
+</RelativeLayout>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +88,7 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
                  intent.putExtra("name",c_name);
                  intent.putExtra("number",c_number);
                  intent.putExtra("email",c_email);
-                 System.out.println("kjhsdfdfjkldsfjk"+c_email);
+                 Log.e("msg","details is called from adapter class");
                  context.startActivity(intent);
              }
          });

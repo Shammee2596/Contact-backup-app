@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_contacts.AddNewContact;
+import com.example.my_contacts.MainActivity;
 import com.example.my_contacts.R;
 import com.example.my_contacts.adapters.Contact_rv_adapter;
 import com.example.my_contacts.models.ModelContact;
@@ -40,9 +41,9 @@ public class FragmentsContacts extends Fragment {
     private RecyclerView recyclerView;
     ModelContact contact;
     DatabaseReference databaseReference;
-    private List<ModelContact> contactList2 = new ArrayList<>();
     List<ModelContact> contactList1 = new ArrayList<>();
     AddNewContact addNewContact;
+    MainActivity mainActivity;
 
     public FragmentsContacts() {
         // some changes
@@ -65,23 +66,30 @@ public class FragmentsContacts extends Fragment {
         RecyclerView.LayoutManager layoutManager =new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        contactList2 = getContacts1();
+        getContactsLists();
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
 
-                contactList1.addAll(contactList2);
+                contactList1.addAll(getContactsLists());
                 contactList1.addAll(contactList);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
             }
         });
-
         return v;
     }
+    public List<ModelContact> getContactsLists(){
+        List<ModelContact> contactList2 = new ArrayList<>();
+        mainActivity = new MainActivity();
 
-    private List<ModelContact> getContacts1(){
+        contactList2 = getContacts1();
+
+        return  contactList2;
+    }
+
+    public List<ModelContact> getContacts1(){
         List<ModelContact> contactList = new ArrayList<>();
 
         String phoneNumber="";
@@ -149,9 +157,12 @@ public class FragmentsContacts extends Fragment {
         list = new ArrayList<>();
         contact = new ModelContact();
         addNewContact = new AddNewContact();
+
         databaseReference = FirebaseDatabase.getInstance().getReference("Contact")
                 .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         databaseReference.keepSynced(true); // to show the data offline
+
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
