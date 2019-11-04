@@ -1,7 +1,5 @@
 package com.example.my_contacts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -16,12 +14,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.my_contacts.adapters.ViewPagerAdapter;
-import com.example.my_contacts.fragments.Fragment_Favourite;
+import com.example.my_contacts.fragments.FragmentImport;
 import com.example.my_contacts.fragments.FragmentsContacts;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -41,7 +36,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
-    private  final int[] icons = {R.drawable.ic_person,R.drawable.ic_star};
+
 
 
     @Override
@@ -53,15 +48,12 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         askPermission();
         addToolBar();
-        displayTabs();
-
     }
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
         if (currentUser == null) {
             sendToStartPage();
         }
@@ -72,8 +64,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         drawer = findViewById(R.id.drawer_layout);
         toogle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        );
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toogle);
         toogle.syncState();
         navigationView = findViewById(R.id.nav_panel);
@@ -83,24 +74,6 @@ implements NavigationView.OnNavigationItemSelectedListener {
         Intent intent = new Intent(MainActivity.this, StartActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private void displayTabs(){
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager = findViewById(R.id.viewpager);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        adapter.addFragment(new FragmentsContacts(),"Contacts");
-        //adapter.addFragment(new Fragment_Calls(),"Calls");
-        adapter.addFragment(new Fragment_Favourite(),"Favourite");
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
-
-        tabLayout.setTabTextColors(android.R.color.white,android.R.color.white);
-        for (int i=0; i<tabLayout.getTabCount();i++){
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setIcon(icons[i]);
-        }
     }
 
     public void askPermission(){
@@ -139,26 +112,23 @@ implements NavigationView.OnNavigationItemSelectedListener {
         }
     }
 
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        Fragment fragment = null;
+
         if (id == R.id.nav_import) {
             Log.e("Hello", "hi");
-            fragment = new FragmentsContacts();
-            //fragment.getClass();
-
-            //fragmentsContacts.getContactsLists();
+            FragmentImport fragment = new FragmentImport();
+            getSupportFragmentManager().beginTransaction().replace(R.id.f_container,fragment).commit();
         } else if (id == R.id.nav_sync) {
 
         } else if (id == R.id.nav_manage) {
 
         }
-        if (fragment != null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,fragment);
-        }
+
 
         drawer.closeDrawer(GravityCompat.START);
         return true;

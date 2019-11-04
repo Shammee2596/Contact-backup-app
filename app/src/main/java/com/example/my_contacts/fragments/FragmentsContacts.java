@@ -74,18 +74,20 @@ public class FragmentsContacts extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         contactList2 = getContacts1();
+
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
-
-                int id = R.id.nav_import;
+                Log.e("FirebaseContact","hi");
                 contactList1.addAll(contactList2);
                 contactList1.addAll(contactList);
+                System.out.println(contactList1.size());
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 recyclerView.setAdapter(contactAapter);
             }
         });
+
         return v;
     }
 
