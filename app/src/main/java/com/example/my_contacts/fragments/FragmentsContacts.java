@@ -8,6 +8,7 @@ import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,11 +44,14 @@ public class FragmentsContacts extends Fragment {
     ModelContact contact;
     DatabaseReference databaseReference;
     List<ModelContact> contactList1 = new ArrayList<>();
+    List<ModelContact> contactList2 = new ArrayList<>();
     AddNewContact addNewContact;
     MainActivity mainActivity;
+    MenuItem item;
 
     public FragmentsContacts() {
         // some changes
+
     }
 
     @Nullable
@@ -54,6 +59,8 @@ public class FragmentsContacts extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_contacts,container,false);
         recyclerView = v.findViewById(R.id.rv_contacts);
+
+        // Add new contact
         TextView createNewContact = v.findViewById(R.id.addContact);
         createNewContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,12 +73,13 @@ public class FragmentsContacts extends Fragment {
         RecyclerView.LayoutManager layoutManager =new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        getContactsLists();
+        contactList2 = getContacts1();
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
 
-                contactList1.addAll(getContactsLists());
+                int id = R.id.nav_import;
+                contactList1.addAll(contactList2);
                 contactList1.addAll(contactList);
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
@@ -79,14 +87,6 @@ public class FragmentsContacts extends Fragment {
             }
         });
         return v;
-    }
-    public List<ModelContact> getContactsLists(){
-        List<ModelContact> contactList2 = new ArrayList<>();
-        mainActivity = new MainActivity();
-
-        contactList2 = getContacts1();
-
-        return  contactList2;
     }
 
     public List<ModelContact> getContacts1(){

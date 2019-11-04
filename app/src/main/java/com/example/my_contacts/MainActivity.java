@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.content.Intent;
@@ -17,15 +18,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.my_contacts.adapters.ViewPagerAdapter;
-import com.example.my_contacts.fragments.Fragment_Calls;
 import com.example.my_contacts.fragments.Fragment_Favourite;
 import com.example.my_contacts.fragments.FragmentsContacts;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -40,6 +42,7 @@ implements NavigationView.OnNavigationItemSelectedListener {
     private ViewPager viewPager;
     private FirebaseAuth mAuth;
     private  final int[] icons = {R.drawable.ic_person,R.drawable.ic_star};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,15 +144,20 @@ implements NavigationView.OnNavigationItemSelectedListener {
 
         int id = item.getItemId();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        FragmentsContacts fragmentsContacts = new FragmentsContacts();
-        boolean import_contact = false;
-
+        Fragment fragment = null;
         if (id == R.id.nav_import) {
             Log.e("Hello", "hi");
+            fragment = new FragmentsContacts();
+            //fragment.getClass();
+
+            //fragmentsContacts.getContactsLists();
         } else if (id == R.id.nav_sync) {
 
         } else if (id == R.id.nav_manage) {
 
+        }
+        if (fragment != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,fragment);
         }
 
         drawer.closeDrawer(GravityCompat.START);
