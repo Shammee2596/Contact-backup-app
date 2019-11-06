@@ -31,12 +31,14 @@ public class ContactDeatils extends AppCompatActivity {
     private TextView btn;
     private TextView tvname, tvphone,tvmail;
     String name,number, email;
+    long id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_deatils);
 
-        btn =  findViewById(R.id.contact_name);
+        btn =  findViewById(R.id.profile_edit);
         tvname = (TextView) findViewById(R.id.profile_displayName);
         tvphone = (TextView) findViewById(R.id.profile_number);
         tvmail = (TextView) findViewById(R.id.profile_Email);
@@ -47,6 +49,38 @@ public class ContactDeatils extends AppCompatActivity {
         tvname.setText(name);
         tvphone.setText(number);
         tvmail.setText(email);
+        id = getContactId(number);
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ContactDeatils.this,EditContact.class);
+                intent.putExtra("name",name);
+                intent.putExtra("number",email);
+                intent.putExtra("email",number);
+                intent.putExtra("contactId",id);
+                Log.e("msg","details is called from adapter class");
+                startActivity(intent);
+            }
+        });
+    }
+    private  Long getContactId(String number){
+        // CONTENT_FILTER_URI allow to search contact by phone number
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+        // This query will return NAME and ID of conatct, associated with phone //number.
+        Cursor mcursor = getContentResolver().query(lookupUri,new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},null, null, null);
+        //Now retrive _ID from query result
+        long idPhone = 0;
+        try {
+            if (mcursor != null) {
+                if (mcursor.moveToFirst()) {
+                    idPhone = Long.valueOf(mcursor.getString(mcursor.getColumnIndex(ContactsContract.PhoneLookup._ID)));
+                    Log.d("", "Contact id::" + idPhone);
+                }
+            }
+        } finally {
+            mcursor.close();
+        }
+        return idPhone;
     }
 }

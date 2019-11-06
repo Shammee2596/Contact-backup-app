@@ -46,13 +46,8 @@ public class FragmentsContacts extends Fragment {
     List<ModelContact> contactList1 = new ArrayList<>();
     List<ModelContact> contactList2 = new ArrayList<>();
     AddNewContact addNewContact;
-    MainActivity mainActivity;
-    MenuItem item;
 
-    public FragmentsContacts() {
-        // some changes
 
-    }
 
     @Nullable
     @Override
@@ -78,7 +73,6 @@ public class FragmentsContacts extends Fragment {
         displayContactList(new ContactStatus() {
             @Override
             public void dataLoaded(List<ModelContact> contactList) {
-                Log.e("FirebaseContact","hi");
                 contactList1.addAll(contactList2);
                 contactList1.addAll(contactList);
                 System.out.println(contactList1.size());
@@ -166,7 +160,9 @@ public class FragmentsContacts extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
              public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                 list.clear();
+
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     contact = postSnapshot.getValue(ModelContact.class); //getting contacts
                     list.add(contact); //adding contacts to the list

@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -98,6 +99,7 @@ public class AddNewContact extends AppCompatActivity {
                 contact.setNumber(number.getText().toString().trim());
                 contact.setEmail(email.getText().toString().trim());
                 contact.setLabel(label.getText().toString().trim());
+                contact.setUserId(databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey());
                 databaseReference.child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(contact);
 
                 addContactToSystemDatabase(fName.getText().toString(),number.getText().toString(),

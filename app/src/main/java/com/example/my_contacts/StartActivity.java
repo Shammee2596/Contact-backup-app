@@ -22,6 +22,7 @@ public class StartActivity extends AppCompatActivity {
     EditText email, password;
     Button loginButton;
     private ProgressDialog progressDialog;
+
     /*   private static final String REQUIRED = "Required";*/
 
     private FirebaseAuth mAuth;

@@ -5,8 +5,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,36 +12,27 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-
 import com.example.my_contacts.fragments.FragmentImport;
-import com.example.my_contacts.fragments.FragmentsContacts;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
 
 public class MainActivity extends AppCompatActivity
-implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawer;
     ActionBarDrawerToggle toogle;
     NavigationView navigationView;
-
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
     private FirebaseAuth mAuth;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*Toast.makeText(MainActivity.this, "Firebase connection success", Toast.LENGTH_LONG).show();*/
+
         mAuth = FirebaseAuth.getInstance();
 
         askPermission();
@@ -128,7 +117,6 @@ implements NavigationView.OnNavigationItemSelectedListener {
         } else if (id == R.id.nav_manage) {
 
         }
-
 
         drawer.closeDrawer(GravityCompat.START);
         return true;

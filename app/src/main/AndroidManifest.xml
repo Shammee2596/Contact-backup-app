@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".My_Contacts"
@@ -17,7 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ContactDeatils"></activity>
+        <activity android:name=".EditContact"></activity>
+        <activity android:name=".ContactDeatils" />
         <activity android:name=".AddNewContact" />
         <activity android:name=".Register" />
         <activity android:name=".StartActivity" />

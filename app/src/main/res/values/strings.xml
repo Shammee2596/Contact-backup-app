@@ -25,4 +25,9 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
 
+
+    <!--Edit Contact-->
+    <string name="edit_contact">Edit Contact</string>
+
+
 </resources>

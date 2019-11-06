@@ -6,6 +6,7 @@ public class ModelContact {
     private String label;
     private  String lastName;
     private  String imageUrl;
+    private String userId;
 
     public ModelContact(){
 
@@ -63,5 +64,13 @@ public class ModelContact {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
