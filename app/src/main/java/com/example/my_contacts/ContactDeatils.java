@@ -68,7 +68,8 @@ public class ContactDeatils extends AppCompatActivity {
         // CONTENT_FILTER_URI allow to search contact by phone number
         Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         // This query will return NAME and ID of conatct, associated with phone //number.
-        Cursor mcursor = getContentResolver().query(lookupUri,new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.PhoneLookup._ID},null, null, null);
+        Cursor mcursor = getContentResolver().query(lookupUri,new String[] { ContactsContract.PhoneLookup.DISPLAY_NAME,
+                ContactsContract.PhoneLookup._ID},null, null, null);
         //Now retrive _ID from query result
         long idPhone = 0;
         try {
