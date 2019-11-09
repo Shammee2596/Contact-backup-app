@@ -99,4 +99,8 @@ public class ContactDeatils extends AppCompatActivity {
         }
         return idPhone;
     }
+    public  boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return true;
+    }
 }
