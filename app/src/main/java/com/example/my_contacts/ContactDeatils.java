@@ -5,6 +5,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -26,19 +27,23 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+import static java.security.AccessController.getContext;
+
 public class ContactDeatils extends AppCompatActivity {
 
-    private TextView btn;
+    private Button btn, starButton;
     private TextView tvname, tvphone,tvmail;
     String name,number, email;
     long id;
+    ContentValues contentValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_deatils);
 
-        btn =  findViewById(R.id.profile_edit);
+        btn =  findViewById(R.id.edit_contact);
+        starButton = findViewById(R.id.fav_button1);
         tvname = (TextView) findViewById(R.id.profile_displayName);
         tvphone = (TextView) findViewById(R.id.profile_number);
         tvmail = (TextView) findViewById(R.id.profile_Email);
@@ -59,8 +64,19 @@ public class ContactDeatils extends AppCompatActivity {
                 intent.putExtra("number",email);
                 intent.putExtra("email",number);
                 intent.putExtra("contactId",id);
-                Log.e("msg","details is called from adapter class");
                 startActivity(intent);
+            }
+        });
+
+        starButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                contentValues = new ContentValues();
+                contentValues.put(ContactsContract.Contacts.STARRED,1);
+                getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
+                        contentValues, ContactsContract.Contacts._ID + "=" + id, null);
+                Toast.makeText(ContactDeatils.this, "Contact added to favourite",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -76,7 +92,6 @@ public class ContactDeatils extends AppCompatActivity {
             if (mcursor != null) {
                 if (mcursor.moveToFirst()) {
                     idPhone = Long.valueOf(mcursor.getString(mcursor.getColumnIndex(ContactsContract.PhoneLookup._ID)));
-                    Log.d("", "Contact id::" + idPhone);
                 }
             }
         } finally {

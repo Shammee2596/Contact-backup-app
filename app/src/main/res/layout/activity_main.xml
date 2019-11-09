@@ -23,18 +23,17 @@
             android:id="@+id/toolbar"
             layout="@layout/toolbar" />
 
-        <FrameLayout
-            android:id="@+id/f_container"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_panel"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/nav_main_menu"/>
+            android:layout_height="0dp"
+            android:paddingLeft="16dp"
+            android:layout_weight="1"/>
 
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </com.google.android.material.tabs.TabLayout>
+    </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

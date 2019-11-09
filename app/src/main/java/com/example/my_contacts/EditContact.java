@@ -82,7 +82,5 @@ public class EditContact extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "contact not in list",
                     Toast.LENGTH_SHORT).show();
         }
-
-
     }
 }

@@ -3,29 +3,38 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager.widget.ViewPager;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.example.my_contacts.fragments.FragmentImport;
+
+import com.example.my_contacts.adapters.TabAdapter;
+import com.example.my_contacts.fragments.Fragment_Favourite;
+import com.example.my_contacts.fragments.FragmentsContacts;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawer;
     ActionBarDrawerToggle toogle;
     NavigationView navigationView;
     private FirebaseAuth mAuth;
+
+    private TabAdapter adapter;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    private  final int[] icons = {R.drawable.ic_person,R.drawable.ic_star};
 
 
     @Override
@@ -37,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
         askPermission();
         addToolBar();
+        displayTabs();
     }
     @Override
     public void onStart() {
@@ -47,17 +57,25 @@ public class MainActivity extends AppCompatActivity
             sendToStartPage();
         }
     }
+    private void displayTabs(){
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewpager);
+        TabAdapter adapter = new TabAdapter(getSupportFragmentManager());
+
+        adapter.addFragment(new FragmentsContacts(),"Contacts");
+        adapter.addFragment(new Fragment_Favourite(),"Favourite");
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabTextColors(android.R.color.white,android.R.color.white);
+        for (int i=0; i<tabLayout.getTabCount();i++){
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setIcon(icons[i]);
+        }
+    }
     private void addToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = findViewById(R.id.drawer_layout);
-        toogle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toogle);
-        toogle.syncState();
-        navigationView = findViewById(R.id.nav_panel);
-        navigationView.setNavigationItemSelectedListener(this);
     }
     private void sendToStartPage() {
         Intent intent = new Intent(MainActivity.this, StartActivity.class);
@@ -92,33 +110,5 @@ public class MainActivity extends AppCompatActivity
         }
         return true;
     }
-    @Override
-    public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
-        if (id == R.id.nav_import) {
-            Log.e("Hello", "hi");
-            FragmentImport fragment = new FragmentImport();
-            getSupportFragmentManager().beginTransaction().replace(R.id.f_container,fragment).commit();
-        } else if (id == R.id.nav_sync) {
-
-        } else if (id == R.id.nav_manage) {
-
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 }
