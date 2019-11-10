@@ -3,15 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/deleteContact"
+        android:id="@+id/menuItemEditContact"
         android:orderInCategory="100"
         android:title="Delete"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/block"
-        android:title="Block Contact"
+        android:id="@+id/menuItemFavouriteContact"
+        android:orderInCategory="100"
+        android:title="Edit"
+        android:icon="@drawable/ic_star"
+        app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/menuItemBlockContact"
+        android:orderInCategory="100"
+        android:title="Block"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom" />
 
-
+    <item
+        android:id="@+id/menuItemDeleteContact"
+        android:orderInCategory="100"
+        android:title="Delete"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="ifRoom"
+        />
 </menu>

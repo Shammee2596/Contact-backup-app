@@ -1,7 +1,6 @@
 package com.example.my_contacts.adapters;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,27 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.my_contacts.ContactDeatils;
+import com.example.my_contacts.ContactDetails;
 import com.example.my_contacts.MainActivity;
 import com.example.my_contacts.R;
-import com.example.my_contacts.fragments.FragmentsContacts;
 import com.example.my_contacts.models.ModelContact;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.ViewHolder> {
@@ -45,6 +35,10 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
     public Contact_rv_adapter(Context context, List<ModelContact> contactList) {
         this.context = context;
         this.contactList = contactList;
+    }
+
+    public void setContactList(List<ModelContact> contactList1){
+        contactList = contactList1;
     }
 
     @NonNull
@@ -84,7 +78,7 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
                  String c_number=  contactList.get(viewHolder.getAdapterPosition()).getNumber();
                  String c_email=  contactList.get(viewHolder.getAdapterPosition()).getEmail();
 
-                 Intent intent = new Intent(context,ContactDeatils.class);
+                 Intent intent = new Intent(context, ContactDetails.class);
                  intent.putExtra("name",c_name);
                  intent.putExtra("number",c_number);
                  intent.putExtra("email",c_email);

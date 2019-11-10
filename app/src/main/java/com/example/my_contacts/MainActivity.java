@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         askPermission();
-        addToolBar();
+        //addToolBar();
         displayTabs();
     }
     @Override
@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
             tab.setIcon(icons[i]);
         }
     }
-    private void addToolBar() {
+    /*private void addToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-    }
+    }*/
     private void sendToStartPage() {
         Intent intent = new Intent(MainActivity.this, StartActivity.class);
         startActivity(intent);

@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditContact"></activity>
-        <activity android:name=".ContactDeatils" />
+        <activity android:name=".ContactDetails" />
         <activity android:name=".AddNewContact" />
         <activity android:name=".Register" />
         <activity android:name=".StartActivity" />

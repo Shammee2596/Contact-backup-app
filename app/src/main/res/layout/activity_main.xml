@@ -19,9 +19,9 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-        <include
+<!--        <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/toolbar" />-->
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewpager"

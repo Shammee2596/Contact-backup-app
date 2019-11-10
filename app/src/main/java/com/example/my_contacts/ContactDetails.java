@@ -1,14 +1,7 @@
 package com.example.my_contacts;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,20 +9,11 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.my_contacts.adapters.Contact_rv_adapter;
-import com.example.my_contacts.models.ModelContact;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.List;
-
-import static java.security.AccessController.getContext;
-
-public class ContactDeatils extends AppCompatActivity {
+public class ContactDetails extends AppCompatActivity {
 
     private Button btn, starButton;
     private TextView tvname, tvphone,tvmail;
@@ -42,11 +26,9 @@ public class ContactDeatils extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_deatils);
 
-        btn =  findViewById(R.id.edit_contact);
-        starButton = findViewById(R.id.fav_button1);
-        tvname = (TextView) findViewById(R.id.profile_displayName);
-        tvphone = (TextView) findViewById(R.id.profile_number);
-        tvmail = (TextView) findViewById(R.id.profile_Email);
+        tvname =  findViewById(R.id.profile_displayName);
+        tvphone = findViewById(R.id.profile_number);
+        tvmail =  findViewById(R.id.profile_Email);
         name = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");
         number = getIntent().getStringExtra("number");
@@ -56,29 +38,6 @@ public class ContactDeatils extends AppCompatActivity {
         tvmail.setText(email);
         id = getContactId(number);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ContactDeatils.this,EditContact.class);
-                intent.putExtra("name",name);
-                intent.putExtra("number",email);
-                intent.putExtra("email",number);
-                intent.putExtra("contactId",id);
-                startActivity(intent);
-            }
-        });
-
-        starButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                contentValues = new ContentValues();
-                contentValues.put(ContactsContract.Contacts.STARRED,1);
-                getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
-                        contentValues, ContactsContract.Contacts._ID + "=" + id, null);
-                Toast.makeText(ContactDeatils.this, "Contact added to favourite",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
     }
     private  Long getContactId(String number){
         // CONTENT_FILTER_URI allow to search contact by phone number
@@ -99,8 +58,29 @@ public class ContactDeatils extends AppCompatActivity {
         }
         return idPhone;
     }
-    public  boolean onCreateOptionsMenu(Menu menu){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.menuItemEditContact) {
+            Intent intent = new Intent(ContactDetails.this,EditContact.class);
+                intent.putExtra("name",name);
+                intent.putExtra("number",email);
+                intent.putExtra("email",number);
+                intent.putExtra("contactId",id);
+                startActivity(intent);
+        }
+        if (item.getItemId() == R.id.menuItemFavouriteContact){
+           contentValues = new ContentValues();
+            contentValues.put(ContactsContract.Contacts.STARRED,1);
+            getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
+                    contentValues, ContactsContract.Contacts._ID + "=" + id, null);
+            Toast.makeText(ContactDetails.this, "Contact added to favourite", Toast.LENGTH_SHORT).show();
+        }
         return true;
     }
 }

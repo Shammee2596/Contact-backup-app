@@ -32,7 +32,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,6 +77,7 @@ public class FragmentsContacts extends Fragment {
                 System.out.println(contactList1.size());
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
+                contactAapter.setContactList(contactList1);
                 recyclerView.setAdapter(contactAapter);
             }
         });

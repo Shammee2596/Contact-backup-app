@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.my_contacts.ContactDeatils;
+import com.example.my_contacts.ContactDetails;
 import com.example.my_contacts.R;
 import com.example.my_contacts.models.ModelContact;
 
@@ -47,7 +47,7 @@ public class Favourite_adapter extends RecyclerView.Adapter<Favourite_adapter.Vi
                 String c_number=  contactList.get(viewHolder.getAdapterPosition()).getNumber();
                 String c_email=  contactList.get(viewHolder.getAdapterPosition()).getEmail();
 
-                Intent intent = new Intent(context, ContactDeatils.class);
+                Intent intent = new Intent(context, ContactDetails.class);
                 intent.putExtra("name",c_name);
                 intent.putExtra("number",c_number);
                 intent.putExtra("email",c_email);
