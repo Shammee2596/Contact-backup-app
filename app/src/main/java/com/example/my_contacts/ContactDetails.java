@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
@@ -80,6 +81,29 @@ public class ContactDetails extends AppCompatActivity {
             getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
                     contentValues, ContactsContract.Contacts._ID + "=" + id, null);
             Toast.makeText(ContactDetails.this, "Contact added to favourite", Toast.LENGTH_SHORT).show();
+        }
+        if (item.getItemId() == R.id.menuItemDeleteContact) {
+            Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+            Cursor cur = this.getContentResolver().query(contactUri, null, null, null, null);
+            try {
+                if (cur.moveToFirst()) {
+                    do {
+                        if (cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME)).equalsIgnoreCase(name)) {
+                            String lookupKey = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+                            Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
+                            this.getContentResolver().delete(uri, null, null);
+                            return true;
+                        }
+
+                    } while (cur.moveToNext());
+                }
+
+            } catch (Exception e) {
+                System.out.println(e.getStackTrace());
+            } finally {
+                cur.close();
+            }
+            return false;
         }
         return true;
     }

@@ -118,7 +118,12 @@ public class FragmentsContacts extends Fragment {
                     }
                     if (textLength <= number.length()) {
                         if(number.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
-                            currentValueList.add(new ModelContact(name, currentContact.getNumber(), currentContact.getEmail()));
+                            currentValueList.add(new ModelContact(name, number, currentContact.getEmail()));
+                        }
+                    }
+                    if (textLength <= email.length()) {
+                        if(email.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                            currentValueList.add(new ModelContact(name, number, email));
                         }
                     }
                 }
