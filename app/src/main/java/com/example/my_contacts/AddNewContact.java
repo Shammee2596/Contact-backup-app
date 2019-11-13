@@ -112,6 +112,13 @@ public class AddNewContact extends AppCompatActivity {
         });
     }
 
+    private long getRawContactId() {
+        ContentValues contentValues = new ContentValues(); // Insert an empty contact.
+        Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, contentValues);
+        long ret = ContentUris.parseId(rawContactUri); // Get the newly created contact raw id.
+        return ret;
+    }
+
     public void addContactToSystemDatabase(String name, String phone,String phoneType,String email){
         Uri contactsUri = ContactsContract.Data.CONTENT_URI;
         long rowContactId = getRawContactId();                      // Add an empty contact and get the generated id.
@@ -121,12 +128,6 @@ public class AddNewContact extends AppCompatActivity {
         finish();
     }
 
-    private long getRawContactId() {
-        ContentValues contentValues = new ContentValues(); // Insert an empty contact.
-        Uri rawContactUri = getContentResolver().insert(ContactsContract.RawContacts.CONTENT_URI, contentValues);
-        long ret = ContentUris.parseId(rawContactUri); // Get the newly created contact raw id.
-        return ret;
-    }
     private void insertContactEmail(Uri contactsUri, long rawContactId, String email){
         ContentValues contentValues = new ContentValues();
         contentValues.clear();

@@ -61,8 +61,9 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
                  if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
                          != PackageManager.PERMISSION_GRANTED){
                      Toast.makeText(context, "Enable call phone in the settings", Toast.LENGTH_LONG).show();
-                     MainActivity mainActivity = new MainActivity();
-                     mainActivity.askCallPermission();
+                     //MainActivity mainActivity = new MainActivity();
+                     //mainActivity.askCallPermission();
+                    // ActivityCompat.requestPermissions(App.getContext(),new String[]{Manifest.permission.CALL_PHONE},1);
                  }else {
                      context.startActivity(intentCall);
                  }

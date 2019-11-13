@@ -19,6 +19,14 @@
         android:text="@string/create_new_contact"
         android:textSize="16sp" />
 
+    <EditText
+        android:id="@+id/editTextSearchContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_contacts"
         android:layout_width="match_parent"

@@ -34,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    int ALL_PERMISSIONS = 101;
+    final String[] permissions = new String[]{Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS};
+
     private  final int[] icons = {R.drawable.ic_person,R.drawable.ic_star};
 
 
@@ -44,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        askPermission();
-        //addToolBar();
+        ActivityCompat.requestPermissions(this, permissions, ALL_PERMISSIONS);
         displayTabs();
     }
     @Override
@@ -83,25 +87,35 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void askPermission(){
+
+    public void askReadContactPermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CONTACTS},1);
-
+            //askCallLogPermission();
         }
+    }
+
+    public void askCallLogPermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_CALL_LOG},1);
         }
+    }
+
+    public void askStoragePermission(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
         }
-
-
     }
+
+
     public void askCallPermission(){
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},1);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},1);
+        }
     }
 
     @Override

@@ -1,16 +1,20 @@
 package com.example.my_contacts.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +48,9 @@ public class FragmentsContacts extends Fragment {
     DatabaseReference databaseReference;
     List<ModelContact> contactList1 = new ArrayList<>();
     List<ModelContact> contactList2 = new ArrayList<>();
+    List<ModelContact> currentValueList = new ArrayList<>();
     AddNewContact addNewContact;
+    EditText editTextSearchContact;
 
 
 
@@ -64,8 +70,12 @@ public class FragmentsContacts extends Fragment {
             }
         });
 
+        editTextSearchContact = v.findViewById(R.id.editTextSearchContact);
+
         RecyclerView.LayoutManager layoutManager =new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
+
+        while (getContacts1() == null);
 
         contactList2 = getContacts1();
 
@@ -79,6 +89,40 @@ public class FragmentsContacts extends Fragment {
                 contactAapter.notifyDataSetChanged();
                 contactAapter.setContactList(contactList1);
                 recyclerView.setAdapter(contactAapter);
+            }
+        });
+
+        editTextSearchContact.addTextChangedListener(new TextWatcher() {
+            int textLength = 0;
+            public void afterTextChanged(Editable s){
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after){
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                editTextSearchContact.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                textLength = editTextSearchContact.getText().length();
+                String text = editTextSearchContact.getText().toString();
+                currentValueList.clear();
+                for (ModelContact currentContact: contactList1) {
+                    String name = currentContact.getName();
+                    String number = currentContact.getNumber();
+                    String email = currentContact.getEmail();
+                    if (textLength <= name.length()) {
+                        if(name.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                            currentValueList.add(new ModelContact(name, currentContact.getNumber(), currentContact.getEmail()));
+                        }
+                    }
+                    if (textLength <= number.length()) {
+                        if(number.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                            currentValueList.add(new ModelContact(name, currentContact.getNumber(), currentContact.getEmail()));
+                        }
+                    }
+                }
+                recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList));
             }
         });
 
@@ -98,8 +142,15 @@ public class FragmentsContacts extends Fragment {
                 ContactsContract.Contacts.HAS_PHONE_NUMBER
         };
 
-        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
-                null, null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
+        Cursor cursor = null;
+
+        try {
+            cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
+                    null, null, ContactsContract.Contacts.DISPLAY_NAME +" ASC");
+        } catch (Exception e) {
+            return null;
+        }
+
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
