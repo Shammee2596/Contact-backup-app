@@ -1,12 +1,16 @@
 package com.example.my_contacts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BlockedNumberContract;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
+import android.telecom.TelecomManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +25,7 @@ public class ContactDetails extends AppCompatActivity {
     String name,number, email;
     long id;
     ContentValues contentValues;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,7 @@ public class ContactDetails extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
+        this.menu = menu;
         return super.onCreateOptionsMenu(menu);
     }
     @Override
@@ -81,6 +87,7 @@ public class ContactDetails extends AppCompatActivity {
             getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
                     contentValues, ContactsContract.Contacts._ID + "=" + id, null);
             Toast.makeText(ContactDetails.this, "Contact added to favourite", Toast.LENGTH_SHORT).show();
+            menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white));
         }
         if (item.getItemId() == R.id.menuItemDeleteContact) {
             Uri contactUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
@@ -105,6 +112,28 @@ public class ContactDetails extends AppCompatActivity {
             }
             return false;
         }
+        if (item.getItemId() == R.id.menuItemBlockContact){
+            ContentValues values = new ContentValues();
+            values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, number);
+            if (isAppAsDefaultDialer()){
+                Toast.makeText(this, "Default", Toast.LENGTH_LONG).show();
+                Uri uri = getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
+            }
+        }
+
+
         return true;
+    }
+
+    private boolean isAppAsDefaultDialer() {
+        TelecomManager telecom = this.getSystemService(TelecomManager.class);
+
+        Log.d("DEFAULT APP ", "isAppAsDefaultDialer: " + telecom.getDefaultDialerPackage().toString());
+        Toast.makeText(this, telecom.getDefaultDialerPackage().toString(), Toast.LENGTH_LONG).show();
+
+        if (getApplicationContext().getPackageName().equals(telecom.getDefaultDialerPackage())) {
+            return true;
+        }
+        return false;
     }
 }

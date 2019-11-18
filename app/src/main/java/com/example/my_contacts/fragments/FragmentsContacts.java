@@ -37,7 +37,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static android.content.ContentValues.TAG;
 
 
 public class FragmentsContacts extends Fragment {
@@ -84,7 +89,16 @@ public class FragmentsContacts extends Fragment {
             public void dataLoaded(List<ModelContact> contactList) {
                 contactList1.addAll(contactList2);
                 contactList1.addAll(contactList);
-                System.out.println(contactList1.size());
+                Collections.sort(contactList1);
+//                System.out.println(contactList1.size());
+//                Set<ModelContact> set = new HashSet<ModelContact>(contactList1);
+//                contactList1 = new ArrayList<ModelContact>();
+//                for (ModelContact mc: set){
+//                    System.out.println(set.size());
+//                    contactList1.add(mc);
+//                }
+//
+//                System.out.println(contactList1.size());
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 contactAapter.setContactList(contactList1);
@@ -127,6 +141,7 @@ public class FragmentsContacts extends Fragment {
                         }
                     }
                 }
+                Collections.sort(currentValueList);
                 recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList));
             }
         });

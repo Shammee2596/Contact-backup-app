@@ -18,15 +18,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditContact"></activity>
-        <activity android:name=".ContactDetails" />
+        <activity android:name=".ContactDetails" >
+
+        </activity>
         <activity android:name=".AddNewContact" />
         <activity android:name=".Register" />
         <activity android:name=".StartActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="tel"/>
             </intent-filter>
         </activity>
     </application>

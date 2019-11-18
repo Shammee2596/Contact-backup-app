@@ -1,6 +1,8 @@
 package com.example.my_contacts.models;
 
-public class ModelContact {
+import androidx.annotation.Nullable;
+
+public class ModelContact implements Comparable<ModelContact> {
     private String name, number;
     private String email;
     private String label;
@@ -16,6 +18,20 @@ public class ModelContact {
         this.name = name;
         this.number = number;
         this.email = email;
+    }
+
+    @Override
+    public int compareTo(ModelContact u) {
+        return name.toLowerCase().compareTo(u.name.toLowerCase());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object u) {
+        if (u == this){
+            ModelContact mc = (ModelContact) u;
+            return name.equals(mc.name);
+        }
+        return false;
     }
 
     public String getImageUrl() {
