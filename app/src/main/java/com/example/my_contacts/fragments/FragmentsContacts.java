@@ -126,7 +126,7 @@ public class FragmentsContacts extends Fragment {
                     String number = currentContact.getNumber();
                     String email = currentContact.getEmail();
                     if (textLength <= name.length()) {
-                        if(name.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                        if(name.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase())) {
                             currentValueList.add(new ModelContact(name, currentContact.getNumber(), currentContact.getEmail()));
                         }
                     }
@@ -135,11 +135,11 @@ public class FragmentsContacts extends Fragment {
                             currentValueList.add(new ModelContact(name, number, currentContact.getEmail()));
                         }
                     }
-                    if (textLength <= email.length()) {
-                        if(email.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                   /*if (textLength <= email.length()) {
+                        if(email.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase())) {
                             currentValueList.add(new ModelContact(name, number, email));
                         }
-                    }
+                    }*/
                 }
                 Collections.sort(currentValueList);
                 recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList));
