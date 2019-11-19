@@ -90,15 +90,15 @@ public class FragmentsContacts extends Fragment {
                 contactList1.addAll(contactList2);
                 contactList1.addAll(contactList);
                 Collections.sort(contactList1);
-//                System.out.println(contactList1.size());
-//                Set<ModelContact> set = new HashSet<ModelContact>(contactList1);
-//                contactList1 = new ArrayList<ModelContact>();
-//                for (ModelContact mc: set){
-//                    System.out.println(set.size());
-//                    contactList1.add(mc);
-//                }
-//
-//                System.out.println(contactList1.size());
+                System.out.println(contactList1.size());
+                Set<ModelContact> set = new HashSet<ModelContact>(contactList1);
+                contactList1 = new ArrayList<ModelContact>();
+                for (ModelContact mc: set){
+                    System.out.println(set.size());
+                    contactList1.add(mc);
+                }
+
+                System.out.println(contactList1.size());
                 Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
                 contactAapter.notifyDataSetChanged();
                 contactAapter.setContactList(contactList1);
@@ -128,18 +128,18 @@ public class FragmentsContacts extends Fragment {
                     if (textLength <= name.length()) {
                         if(name.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
                             currentValueList.add(new ModelContact(name, currentContact.getNumber(), currentContact.getEmail()));
+                        } else if (textLength <= number.length()) {
+                            if(number.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                                currentValueList.add(new ModelContact(name, number, currentContact.getEmail()));
+                            }
+                        } else if (textLength <= email.length()) {
+                            if(email.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
+                                currentValueList.add(new ModelContact(name, number, email));
+                            }
                         }
                     }
-                    if (textLength <= number.length()) {
-                        if(number.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
-                            currentValueList.add(new ModelContact(name, number, currentContact.getEmail()));
-                        }
-                    }
-                    if (textLength <= email.length()) {
-                        if(email.toLowerCase().contains(editTextSearchContact.getText().toString().toLowerCase().trim())) {
-                            currentValueList.add(new ModelContact(name, number, email));
-                        }
-                    }
+
+
                 }
                 Collections.sort(currentValueList);
                 recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList));
@@ -176,6 +176,7 @@ public class FragmentsContacts extends Fragment {
                 String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
                 String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                String star = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.STARRED));
 
 
                 if (hasPhone.equalsIgnoreCase("1"))
@@ -208,7 +209,11 @@ public class FragmentsContacts extends Fragment {
                 }
                 emails.close();
 
-                contactList.add(new ModelContact(name, phoneNumber, emailAddress));
+                boolean isFavorite = false;
+
+                if (star.equals("1")) isFavorite = true;
+
+                contactList.add(new ModelContact(name, phoneNumber, emailAddress, isFavorite));
                 Log.e("Test", "Email: " + emailAddress + "  Name: " + name + "  Number: " + phoneNumber);
             }
 

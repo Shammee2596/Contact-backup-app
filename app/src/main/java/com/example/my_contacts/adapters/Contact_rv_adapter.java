@@ -75,14 +75,19 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
              public void onClick(View view) {
 
                 // Toast.makeText(context, String.valueOf(viewHolder.getAdapterPosition()), Toast.LENGTH_LONG).show();
-                 String c_name=  contactList.get(viewHolder.getAdapterPosition()).getName();
-                 String c_number=  contactList.get(viewHolder.getAdapterPosition()).getNumber();
-                 String c_email=  contactList.get(viewHolder.getAdapterPosition()).getEmail();
+//                 String c_name=  contactList.get(viewHolder.getAdapterPosition()).getName();
+//                 String c_number=  contactList.get(viewHolder.getAdapterPosition()).getNumber();
+//                 String c_email=  contactList.get(viewHolder.getAdapterPosition()).getEmail();
+
+                 ModelContact currentContact = contactList.get(viewHolder.getAdapterPosition());
+
 
                  Intent intent = new Intent(context, ContactDetails.class);
-                 intent.putExtra("name",c_name);
-                 intent.putExtra("number",c_number);
-                 intent.putExtra("email",c_email);
+                 intent.putExtra("name",currentContact.getName());
+                 intent.putExtra("number",currentContact.getNumber());
+                 intent.putExtra("email",currentContact.getEmail());
+                 intent.putExtra("fav", currentContact.isFavourite());
+
                  Log.e("msg","details is called from adapter class");
                  context.startActivity(intent);
              }

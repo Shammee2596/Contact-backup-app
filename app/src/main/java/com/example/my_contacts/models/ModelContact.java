@@ -6,9 +6,12 @@ public class ModelContact implements Comparable<ModelContact> {
     private String name, number;
     private String email;
     private String label;
-    private  String lastName;
-    private  String imageUrl;
+    private String lastName;
+    private String imageUrl;
     private String userId;
+    private boolean isFavourite = false;
+
+
 
     public ModelContact(){
 
@@ -20,6 +23,13 @@ public class ModelContact implements Comparable<ModelContact> {
         this.email = email;
     }
 
+    public ModelContact(String name, String number,String email, boolean isFavourite) {
+        this.name = name;
+        this.number = number;
+        this.email = email;
+        this.isFavourite = isFavourite;
+    }
+
     @Override
     public int compareTo(ModelContact u) {
         return name.toLowerCase().compareTo(u.name.toLowerCase());
@@ -29,9 +39,22 @@ public class ModelContact implements Comparable<ModelContact> {
     public boolean equals(@Nullable Object u) {
         if (u == this){
             ModelContact mc = (ModelContact) u;
-            return name.equals(mc.name);
+            return number.equals(mc.number) && name.equals(mc.name);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (int i = 0; i < number.length(); i++) {
+            hash += (int)number.charAt(i);
+        }
+        return hash;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 
     public String getImageUrl() {
@@ -88,5 +111,9 @@ public class ModelContact implements Comparable<ModelContact> {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
     }
 }

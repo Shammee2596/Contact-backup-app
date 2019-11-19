@@ -26,6 +26,7 @@ public class ContactDetails extends AppCompatActivity {
     long id;
     ContentValues contentValues;
     private Menu menu;
+    boolean isFav = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,7 @@ public class ContactDetails extends AppCompatActivity {
         name = getIntent().getStringExtra("name");
         email = getIntent().getStringExtra("email");
         number = getIntent().getStringExtra("number");
+        isFav = getIntent().getExtras().getBoolean("fav");
 
         tvname.setText(name);
         tvphone.setText(number);
@@ -68,6 +70,8 @@ public class ContactDetails extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
         this.menu = menu;
+        if (isFav) menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white));
+
         return super.onCreateOptionsMenu(menu);
     }
     @Override

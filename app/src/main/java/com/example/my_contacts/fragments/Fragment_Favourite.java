@@ -39,6 +39,9 @@ public class Fragment_Favourite extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         favouriteContactList = getContacts1();
+        for (ModelContact mc: favouriteContactList) {
+
+        }
         Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),favouriteContactList);
         contactAapter.notifyDataSetChanged();
         recyclerView.setAdapter(contactAapter);
