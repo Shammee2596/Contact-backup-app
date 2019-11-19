@@ -78,16 +78,16 @@ public class ContactDetails extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.menuItemEditContact) {
-            Intent intent = new Intent(ContactDetails.this,EditContact.class);
-                intent.putExtra("name",name);
-                intent.putExtra("number",email);
-                intent.putExtra("email",number);
-                intent.putExtra("contactId",id);
-                startActivity(intent);
+            Intent intent = new Intent(ContactDetails.this, EditContact.class);
+            intent.putExtra("name", name);
+            intent.putExtra("number", email);
+            intent.putExtra("email", number);
+            intent.putExtra("contactId", id);
+            startActivity(intent);
         }
-        if (item.getItemId() == R.id.menuItemFavouriteContact){
-           contentValues = new ContentValues();
-            contentValues.put(ContactsContract.Contacts.STARRED,1);
+        if (item.getItemId() == R.id.menuItemFavouriteContact) {
+            contentValues = new ContentValues();
+            contentValues.put(ContactsContract.Contacts.STARRED, 1);
             getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
                     contentValues, ContactsContract.Contacts._ID + "=" + id, null);
             Toast.makeText(ContactDetails.this, "Contact added to favourite", Toast.LENGTH_SHORT).show();
@@ -103,6 +103,7 @@ public class ContactDetails extends AppCompatActivity {
                             String lookupKey = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
                             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
                             this.getContentResolver().delete(uri, null, null);
+                            Toast.makeText(ContactDetails.this, "Contact Deleted", Toast.LENGTH_SHORT).show();
                             return true;
                         }
 
@@ -116,7 +117,7 @@ public class ContactDetails extends AppCompatActivity {
             }
             return false;
         }
-        if (item.getItemId() == R.id.menuItemBlockContact){
+        /*if (item.getItemId() == R.id.menuItemBlockContact){
             ContentValues values = new ContentValues();
             values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, number);
             if (isAppAsDefaultDialer()){
@@ -137,7 +138,8 @@ public class ContactDetails extends AppCompatActivity {
 
         if (getApplicationContext().getPackageName().equals(telecom.getDefaultDialerPackage())) {
             return true;
-        }
+        }*/
         return false;
     }
+
 }
