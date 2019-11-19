@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.my_contacts.ContactDetails;
 import com.example.my_contacts.MainActivity;
 import com.example.my_contacts.R;
+import com.example.my_contacts.custom_listeners.OnContactDetailsListener;
 import com.example.my_contacts.models.ModelContact;
 
 import java.util.List;
@@ -31,10 +32,12 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
     private Context context;
 
     private List<ModelContact> contactList;
+    final OnContactDetailsListener detailsListener;
 
-    public Contact_rv_adapter(Context context, List<ModelContact> contactList) {
+    public Contact_rv_adapter(Context context, List<ModelContact> contactList, OnContactDetailsListener detailsListener) {
         this.context = context;
         this.contactList = contactList;
+        this.detailsListener = detailsListener;
     }
 
     public void setContactList(List<ModelContact> contactList1){
@@ -82,14 +85,16 @@ public class Contact_rv_adapter extends RecyclerView.Adapter<Contact_rv_adapter.
                  ModelContact currentContact = contactList.get(viewHolder.getAdapterPosition());
 
 
-                 Intent intent = new Intent(context, ContactDetails.class);
-                 intent.putExtra("name",currentContact.getName());
-                 intent.putExtra("number",currentContact.getNumber());
-                 intent.putExtra("email",currentContact.getEmail());
-                 intent.putExtra("fav", currentContact.isFavourite());
+//                 Intent intent = new Intent(context, ContactDetails.class);
+//                 intent.putExtra("name",currentContact.getName());
+//                 intent.putExtra("number",currentContact.getNumber());
+//                 intent.putExtra("email",currentContact.getEmail());
+//                 intent.putExtra("fav", currentContact.isFavourite());
+
+                 detailsListener.onContactDetails(currentContact);
 
                  Log.e("msg","details is called from adapter class");
-                 context.startActivity(intent);
+                 //context.startActivity(intent);
              }
          });
         return viewHolder;

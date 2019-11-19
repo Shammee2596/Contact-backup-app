@@ -16,13 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_contacts.R;
 import com.example.my_contacts.adapters.Contact_rv_adapter;
+import com.example.my_contacts.custom_listeners.OnContactDetailsListener;
 import com.example.my_contacts.models.ModelContact;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Fragment_Favourite extends Fragment {
+public class Fragment_Favourite extends Fragment implements OnContactDetailsListener {
     private View v;
     private RecyclerView recyclerView;
     List<ModelContact> favouriteContactList = new ArrayList<>();
@@ -42,7 +43,7 @@ public class Fragment_Favourite extends Fragment {
         for (ModelContact mc: favouriteContactList) {
 
         }
-        Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),favouriteContactList);
+        Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),favouriteContactList, this);
         contactAapter.notifyDataSetChanged();
         recyclerView.setAdapter(contactAapter);
 
@@ -106,6 +107,9 @@ public class Fragment_Favourite extends Fragment {
     }
 
 
-
+    @Override
+    public void onContactDetails(ModelContact contact) {
+        return;
+    }
 }
 

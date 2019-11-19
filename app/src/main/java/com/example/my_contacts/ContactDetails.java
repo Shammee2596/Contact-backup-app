@@ -18,6 +18,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.my_contacts.custom_listeners.OnContactDeleteListener;
+import com.example.my_contacts.fragments.FragmentsContacts;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ContactDetails extends AppCompatActivity {
 
     private Button btn, starButton;
@@ -27,6 +32,9 @@ public class ContactDetails extends AppCompatActivity {
     ContentValues contentValues;
     private Menu menu;
     boolean isFav = false;
+    OnContactDeleteListener deleteListener;
+    DatabaseReference databaseReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +48,16 @@ public class ContactDetails extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         number = getIntent().getStringExtra("number");
         isFav = getIntent().getExtras().getBoolean("fav");
+        //deleteListener = (OnContactDeleteListener) getIntent().getSerializableExtra("delete_listen");
 
         tvname.setText(name);
         tvphone.setText(number);
         tvmail.setText(email);
         id = getContactId(number);
+
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Contact");
+
+        // TODO: firebase data remove
 
     }
     private  Long getContactId(String number){
@@ -104,6 +117,7 @@ public class ContactDetails extends AppCompatActivity {
                             Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey);
                             this.getContentResolver().delete(uri, null, null);
                             Toast.makeText(ContactDetails.this, "Contact Deleted", Toast.LENGTH_SHORT).show();
+                            FragmentsContacts.deleteListener.onContactDelete(number);
                             return true;
                         }
 
@@ -115,7 +129,6 @@ public class ContactDetails extends AppCompatActivity {
             } finally {
                 cur.close();
             }
-            return false;
         }
         /*if (item.getItemId() == R.id.menuItemBlockContact){
             ContentValues values = new ContentValues();

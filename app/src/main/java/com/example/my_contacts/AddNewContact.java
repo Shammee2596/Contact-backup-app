@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.my_contacts.adapters.Contact_rv_adapter;
+import com.example.my_contacts.fragments.FragmentsContacts;
 import com.example.my_contacts.models.ModelContact;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -104,9 +105,16 @@ public class AddNewContact extends AppCompatActivity {
 
                 addContactToSystemDatabase(fName.getText().toString(),number.getText().toString(),
                         "mobile", email.getText().toString());
-                Intent i = new Intent(AddNewContact.this, MainActivity.class);
-                startActivity(i);
+//                Intent i = new Intent(AddNewContact.this, MainActivity.class);
+//                startActivity(i);
+
+                FragmentsContacts.addListener.onContactAdd(contact);
+
+                Intent data = new Intent();
+
                 Toast.makeText(AddNewContact.this, "Contact saved successfully", Toast.LENGTH_LONG).show();
+                setResult(RESULT_OK, data);
+
                 finish();
             }
         });

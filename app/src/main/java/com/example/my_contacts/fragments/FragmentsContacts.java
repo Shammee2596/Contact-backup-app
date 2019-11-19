@@ -26,9 +26,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.my_contacts.AddNewContact;
+import com.example.my_contacts.ContactDetails;
 import com.example.my_contacts.MainActivity;
 import com.example.my_contacts.R;
 import com.example.my_contacts.adapters.Contact_rv_adapter;
+import com.example.my_contacts.custom_listeners.OnContactAddListener;
+import com.example.my_contacts.custom_listeners.OnContactDeleteListener;
+import com.example.my_contacts.custom_listeners.OnContactDetailsListener;
 import com.example.my_contacts.models.ModelContact;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +49,7 @@ import java.util.Set;
 import static android.content.ContentValues.TAG;
 
 
-public class FragmentsContacts extends Fragment {
+public class FragmentsContacts extends Fragment implements OnContactAddListener, OnContactDeleteListener, OnContactDetailsListener {
 
     private View v;
     private RecyclerView recyclerView;
@@ -56,6 +60,10 @@ public class FragmentsContacts extends Fragment {
     List<ModelContact> currentValueList = new ArrayList<>();
     AddNewContact addNewContact;
     EditText editTextSearchContact;
+
+    OnContactDetailsListener detailsListener;
+    public static OnContactDeleteListener deleteListener;
+    public static OnContactAddListener addListener;
 
 
 
@@ -74,6 +82,10 @@ public class FragmentsContacts extends Fragment {
                 startActivity(intent);
             }
         });
+
+        this.addListener = (OnContactAddListener) this;
+        this.detailsListener = (OnContactDetailsListener) this;
+        this.deleteListener = (OnContactDeleteListener) this;
 
         editTextSearchContact = v.findViewById(R.id.editTextSearchContact);
 
@@ -99,7 +111,7 @@ public class FragmentsContacts extends Fragment {
                 }
 
                 System.out.println(contactList1.size());
-                Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1);
+                Contact_rv_adapter contactAapter = new Contact_rv_adapter(getContext(),contactList1, detailsListener);
                 contactAapter.notifyDataSetChanged();
                 contactAapter.setContactList(contactList1);
                 recyclerView.setAdapter(contactAapter);
@@ -142,7 +154,7 @@ public class FragmentsContacts extends Fragment {
 
                 }
                 Collections.sort(currentValueList);
-                recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList));
+                recyclerView.setAdapter(new Contact_rv_adapter((getContext()), currentValueList, detailsListener));
             }
         });
 
@@ -250,8 +262,47 @@ public class FragmentsContacts extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onContactAdd(ModelContact contact) {
+        //contactList1.add(contact);
+        Collections.sort(contactList1);
+        recyclerView.setAdapter(new Contact_rv_adapter((getContext()), contactList1, detailsListener));
+    }
+
+    @Override
+    public void onContactDelete(String number) {
+        int index = -1;
+        for (int i = 0; i < contactList1.size(); i++){
+            if (contactList1.get(i).getNumber().equals(number)){
+                index = i;
+            }
+        }
+        if (index == -1)return;
+        contactList1.remove(index);
+        recyclerView.setAdapter(new Contact_rv_adapter((getContext()), contactList1, detailsListener));
+    }
+
+    @Override
+    public void onContactDetails(ModelContact contact) {
+        Intent intent = new Intent(getContext(), ContactDetails.class);
+        intent.putExtra("name",contact.getName());
+        intent.putExtra("number",contact.getNumber());
+        intent.putExtra("email",contact.getEmail());
+        intent.putExtra("fav", contact.isFavourite());
+
+        startActivity(intent);
+    }
+
     public interface ContactStatus{
         public void dataLoaded(List<ModelContact>contactList);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
     }
 }
 
