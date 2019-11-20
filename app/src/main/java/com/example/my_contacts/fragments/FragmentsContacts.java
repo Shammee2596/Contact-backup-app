@@ -46,9 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static android.content.ContentValues.TAG;
-
-
 public class FragmentsContacts extends Fragment implements OnContactAddListener, OnContactDeleteListener, OnContactDetailsListener {
 
     private View v;
