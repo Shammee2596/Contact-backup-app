@@ -30,6 +30,10 @@ public class Contact implements Comparable<Contact>,Parcelable {
         this.isFavourite = isFavourite;
     }
 
+    public boolean findContact (Contact contact){
+        return number.equals(contact.getNumber());
+    }
+
     public String getName() {
         return name;
     }

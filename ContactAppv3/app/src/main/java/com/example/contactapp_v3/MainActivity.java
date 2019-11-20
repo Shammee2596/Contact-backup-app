@@ -9,8 +9,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,15 +22,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.reader.ContactReader;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private View v;
     private LinearLayoutManager linearLayoutManager;
     private FirebaseRecyclerAdapter adapter;
+
+    public static final Set<Contact> contactList = new HashSet<>();
 
     int ALL_PERMISSIONS = 101;
     final String[] permissions = new String[]{Manifest.permission.READ_CONTACTS,
@@ -58,24 +67,57 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        LayoutInflater inflater = getLayoutInflater();
-
-        //v = inflater.inflate(R.layout.frag_contacts,container,false);
         recyclerView = findViewById(R.id.rv_contacts);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        //startContactLookService();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
+                .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Contact contact = postSnapshot.getValue(Contact.class); //getting contacts
+                    contactList.add(contact);
+                }
+                Toast.makeText(MainActivity.this, String.valueOf(contactList.size()), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
     }
 
     private void addContact(FirebaseUser currentUser) {
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
-                .child("User").child(currentUser.getUid()).push();
+        ContactReader contactReader = new ContactReader(this);
 
-        Contact contact = new Contact("Name", "0123456789", "asd@gdfd.cvc");
-        reference.setValue(contact);
+        List<Contact> phoneContactList;
+
+        while (contactReader.getContacts() == null);
+        phoneContactList = contactReader.getContacts();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
+                .child("User").child(currentUser.getUid());
+
+        for (Contact contact: phoneContactList) {
+
+            for(Contact contact1: contactList){
+                if (!contact.findContact(contact1)){
+                    reference.push().setValue(contact);
+                }
+            }
+
+            //reference.push().setValue(contact);
+        }
 
     }
 
@@ -88,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
             sendToStartPage();
         }else {
             //addContact(currentUser);
+            new ContactAsyncTask().execute();
             fetch();
             adapter.startListening();
         }
@@ -96,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        //adapter.stopListening();
+        adapter.stopListening();
     }
 
     private void sendToStartPage() {
@@ -140,14 +183,6 @@ public class MainActivity extends AppCompatActivity {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.items_contacts, parent, false);
 
-                final ViewHolder viewHolder = new ViewHolder(view);
-
-                viewHolder.item_contact.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "Clicked", Toast.LENGTH_LONG).show();
-                    }
-                });
 
                 return new ViewHolder(view);
             }
@@ -157,6 +192,14 @@ public class MainActivity extends AppCompatActivity {
             protected void onBindViewHolder(ViewHolder holder, final int position, Contact model) {
                 holder.setName(model.getName());
                 holder.setNumber(model.getNumber());
+
+                holder.item_contact.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
             }
 
         };
@@ -176,6 +219,15 @@ public class MainActivity extends AppCompatActivity {
             txtName = itemView.findViewById(R.id.contact_name);
             txtNumber = itemView.findViewById(R.id.number);
             button = itemView.findViewById(R.id.contact_button);
+
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    String number = view.findViewById(R.id.number).toString();
+//                    Toast.makeText(MainActivity.this, number, Toast.LENGTH_LONG).show();
+//                }
+//            });
+
         }
 
         public void setName(String name) {
@@ -186,6 +238,72 @@ public class MainActivity extends AppCompatActivity {
             txtNumber.setText(number);
         }
 
+
+
     }
+
+//    private void startContactLookService() {
+////        try {
+////            if (ActivityCompat.checkSelfPermission(ContactWatchActivity.this,
+////                    Manifest.permission.READ_CONTACTS)
+////                    == PackageManager.PERMISSION_GRANTED) {//Checking permission
+////                //Starting service for registering ContactObserver
+////                Intent intent = new Intent(ContactWatchActivity.this, ContactWatchService.class);
+////                startService(intent);
+////            } else {
+////                //Ask for READ_CONTACTS permission
+////                ActivityCompat.requestPermissions(ContactWatchActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
+////            }
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////        }
+//
+//        Intent intent = new Intent(MainActivity.this, ContactWatchService.class);
+//
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        //If permission granted
+//        if (requestCode == ALL_PERMISSIONS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//            startContactLookService();
+//        }
+//    }
+
+
+     class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
+        ContactReader contactReader = new ContactReader(MainActivity.this);
+        List<Contact> phoneContactList;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            contactReader.getContacts();
+
+            while (contactReader.getContacts() == null);
+            phoneContactList = contactReader.getContacts();
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
+                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            for (Contact contact: phoneContactList) {
+                boolean found = false;
+                for(Contact contact1: contactList){
+                    if (contact.findContact(contact1)){
+                        found = true;
+                    }
+                }
+                if(!found){
+                    reference.push().setValue(contact);
+
+                }
+
+
+            }
+
+            return null;
+        }
+    }
+
 
 }
