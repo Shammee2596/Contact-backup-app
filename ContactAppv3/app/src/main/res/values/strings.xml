@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">My_Contacts v3</string>
+
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="forget_password">Forget password?</string>
+    <string name="welcome_back">Welcome</string>
+    <string name="subtitle">Manage your contacts</string>
+
+    <string name="Sign_up_title">Create Account</string>
+    <string name="name">Name</string>
+    <string name="already_have_account">Already have a account?</string>
+
+    <string name="create_new_contact">Create new contact</string>
+
+    <!-- Navigation menu -->
+    <string name="menu_login">Login</string>
+    <string name="menu_import">Import</string>
+    <string name="menu_sync">Sync</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_communicate">Communicate</string>
+    <string name="menu_share">Share</string>
+
+    <string name="navigation_drawer_open">Open Navigation Drawer</string>
+    <string name="navigation_drawer_close">Close Navigation Drawer</string>
+
+
+    <!--Edit Contact-->
+    <string name="edit_contact">Edit Contact</string>
+
+
+</resources>
