@@ -151,7 +151,7 @@ public class Contact implements Comparable<Contact>,Parcelable {
 
     @Override
     public int compareTo(Contact u) {
-        return name.toLowerCase().compareTo(u.name.toLowerCase());
+        return name.compareTo(u.name);
     }
 
     @Override

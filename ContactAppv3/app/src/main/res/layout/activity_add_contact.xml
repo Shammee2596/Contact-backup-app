@@ -1,0 +1,87 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_new_contact"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextView"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <!--<ImageView
+            android:id="@+id/addImage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/img"
+            android:layout_marginLeft="150dp"
+            />
+-->
+
+        <EditText
+            android:id="@+id/createContactFName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:hint="First name" />
+
+        <EditText
+            android:id="@+id/createContactLName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="Last name" />
+
+
+        <EditText
+            android:id="@+id/createContactNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="Phone number"
+            android:inputType="phone" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="31dp"
+            android:layout_height="9dp"
+            android:prompt="@string/app_name" />
+
+        <EditText
+            android:id="@+id/createContactEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="@string/email" />
+
+        <EditText
+            android:id="@+id/createContactLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:hint="Label" />
+
+        <Button
+            android:id="@+id/createContactButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorButton"
+            android:text="Save"
+            android:textColor="#fff"
+            android:textSize="20dp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -5,12 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,23 +35,22 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    //private TabAdapter adapter;
-    //private TabLayout tabLayout;
-    private ViewPager viewPager;
     private RecyclerView recyclerView;
-    private View v;
     private LinearLayoutManager linearLayoutManager;
     private FirebaseRecyclerAdapter adapter;
 
-    public static final Set<Contact> contactList = new HashSet<>();
+    private TextView textViewAddContact;
+
+    public static final List<Contact> contactList = new ArrayList<>();
 
     int ALL_PERMISSIONS = 101;
     final String[] permissions = new String[]{Manifest.permission.READ_CONTACTS,
@@ -69,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.rv_contacts);
         linearLayoutManager = new LinearLayoutManager(this);
+
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        //startContactLookService();
+
+        textViewAddContact = findViewById(R.id.addContact);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
                 .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -79,10 +80,13 @@ public class MainActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                contactList.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = postSnapshot.getValue(Contact.class); //getting contacts
                     contactList.add(contact);
+
                 }
+                Collections.sort(contactList);
                 Toast.makeText(MainActivity.this, String.valueOf(contactList.size()), Toast.LENGTH_LONG).show();
             }
 
@@ -92,48 +96,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-    }
-
-    private void addContact(FirebaseUser currentUser) {
-
-        ContactReader contactReader = new ContactReader(this);
-
-        List<Contact> phoneContactList;
-
-        while (contactReader.getContacts() == null);
-        phoneContactList = contactReader.getContacts();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
-                .child("User").child(currentUser.getUid());
-
-        for (Contact contact: phoneContactList) {
-
-            for(Contact contact1: contactList){
-                if (!contact.findContact(contact1)){
-                    reference.push().setValue(contact);
-                }
+        textViewAddContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
+                startActivity(intent);
             }
-
-            //reference.push().setValue(contact);
-        }
+        });
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             sendToStartPage();
         }else {
-            //addContact(currentUser);
-            new ContactAsyncTask().execute();
+            setRepeatingAsyncTask();
             fetch();
             adapter.startListening();
         }
+    }
+
+    private void setRepeatingAsyncTask() {
+
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try {
+                            ContactAsyncTask contactAsyncTask = new ContactAsyncTask();
+                            contactAsyncTask.execute();
+                        } catch (Exception e) {
+                            // error, do something
+                        }
+                    }
+                });
+            }
+        };
+
+        timer.schedule(task, 0, 10*1000);
+
     }
 
     @Override
@@ -150,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
@@ -164,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     private void fetch() {
         Query query = FirebaseDatabase.getInstance().getReference("Contact")
@@ -196,8 +202,11 @@ public class MainActivity extends AppCompatActivity {
                 holder.item_contact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                        Contact currentContact = contactList.get(position);
+                        Intent intent = new Intent(MainActivity.this, ContactDetailsActivity.class);
+                        intent.putExtra("emptyContact", currentContact);
+                        startActivity(intent);
                     }
                 });
             }
@@ -220,14 +229,6 @@ public class MainActivity extends AppCompatActivity {
             txtNumber = itemView.findViewById(R.id.number);
             button = itemView.findViewById(R.id.contact_button);
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String number = view.findViewById(R.id.number).toString();
-//                    Toast.makeText(MainActivity.this, number, Toast.LENGTH_LONG).show();
-//                }
-//            });
-
         }
 
         public void setName(String name) {
@@ -242,43 +243,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    private void startContactLookService() {
-////        try {
-////            if (ActivityCompat.checkSelfPermission(ContactWatchActivity.this,
-////                    Manifest.permission.READ_CONTACTS)
-////                    == PackageManager.PERMISSION_GRANTED) {//Checking permission
-////                //Starting service for registering ContactObserver
-////                Intent intent = new Intent(ContactWatchActivity.this, ContactWatchService.class);
-////                startService(intent);
-////            } else {
-////                //Ask for READ_CONTACTS permission
-////                ActivityCompat.requestPermissions(ContactWatchActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_READ_CONTACTS);
-////            }
-////        } catch (Exception e) {
-////            e.printStackTrace();
-////        }
-//
-//        Intent intent = new Intent(MainActivity.this, ContactWatchService.class);
-//
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        //If permission granted
-//        if (requestCode == ALL_PERMISSIONS && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            startContactLookService();
-//        }
-//    }
-
-
      class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
         ContactReader contactReader = new ContactReader(MainActivity.this);
         List<Contact> phoneContactList;
 
         @Override
         protected Void doInBackground(Void... voids) {
-            contactReader.getContacts();
+
+            //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
+            System.out.println("Async called");
 
             while (contactReader.getContacts() == null);
             phoneContactList = contactReader.getContacts();
@@ -291,16 +264,13 @@ public class MainActivity extends AppCompatActivity {
                 for(Contact contact1: contactList){
                     if (contact.findContact(contact1)){
                         found = true;
+
                     }
                 }
                 if(!found){
                     reference.push().setValue(contact);
-
                 }
-
-
             }
-
             return null;
         }
     }
