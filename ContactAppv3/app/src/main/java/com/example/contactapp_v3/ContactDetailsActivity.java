@@ -54,9 +54,9 @@ public class ContactDetailsActivity extends AppCompatActivity {
             tvname.setText(contact.getName());
             tvphone.setText(contact.getNumber());
             tvmail.setText(contact.getEmail());
-            this.query = FirebaseDatabase.getInstance().getReference("Contact")
+            this.databaseReference = FirebaseDatabase.getInstance().getReference("Contact")
                     .child("User").child(FirebaseAuth.getInstance().getCurrentUser().
-                            getUid()).getRoot().child("number").equalTo(contact.getNumber());
+                            getUid()).child(contact.get_id());
 
         }
     }
@@ -89,19 +89,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
 //            menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white));
         }
         if (item.getItemId() == R.id.menuItemDeleteContact) {
-            this.query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-                        appleSnapshot.getRef().removeValue();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    //Log.e(TAG, "onCancelled", databaseError.toException());
-                }
-            });
+            this.databaseReference.removeValue();
         }
         /*if (item.getItemId() == R.id.menuItemBlockContact){
             ContentValues values = new ContentValues();

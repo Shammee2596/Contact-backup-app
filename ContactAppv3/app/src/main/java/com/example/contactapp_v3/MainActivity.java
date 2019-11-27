@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 contactList.clear();
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Contact contact = postSnapshot.getValue(Contact.class); //getting contacts
+                    contact.set_id(postSnapshot.getKey());
                     contactList.add(contact);
 
                 }
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(task, 0, 10*1000);
+        timer.schedule(task, 0, 60*1000);
 
     }
 
@@ -202,10 +203,11 @@ public class MainActivity extends AppCompatActivity {
                 holder.item_contact.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        if (position >= contactList.size()) return;
                         Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
                         Contact currentContact = contactList.get(position);
                         Intent intent = new Intent(MainActivity.this, ContactDetailsActivity.class);
-                        intent.putExtra("emptyContact", currentContact);
+                        intent.putExtra("detailsContact", currentContact);
                         startActivity(intent);
                     }
                 });
