@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     int ALL_PERMISSIONS = 101;
     final String[] permissions = new String[]{Manifest.permission.READ_CONTACTS,
             Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS};
+            Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS,
+            Manifest.permission.READ_PHONE_STATE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             sendToStartPage();
-        }else {
+        } else {
             setRepeatingAsyncTask();
             fetch();
             adapter.startListening();
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(task, 0, 60*1000);
+        timer.schedule(task, 0, 60 * 1000);
 
     }
 
@@ -242,38 +243,37 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
     }
 
-     class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
+    class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
         ContactReader contactReader = new ContactReader(MainActivity.this);
         List<Contact> phoneContactList;
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
-            System.out.println("Async called");
-
-            while (contactReader.getContacts() == null);
-            phoneContactList = contactReader.getContacts();
-
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
-                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-            for (Contact contact: phoneContactList) {
-                boolean found = false;
-                for(Contact contact1: contactList){
-                    if (contact.findContact(contact1)){
-                        found = true;
-
-                    }
-                }
-                if(!found){
-                    reference.push().setValue(contact);
-                }
-            }
             return null;
+            //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
+//            System.out.println("Async called");
+//
+//            while (contactReader.getContacts() == null);
+//            phoneContactList = contactReader.getContacts();
+//
+//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
+//                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//
+//            for (Contact contact: phoneContactList) {
+//                boolean found = false;
+//                for(Contact contact1: contactList){
+//                    if (contact.findContact(contact1)){
+//                        found = true;
+//
+//                    }
+//                }
+//                if(!found){
+//                    reference.push().setValue(contact);
+//                }
+//            }
+//            return null;
         }
     }
 

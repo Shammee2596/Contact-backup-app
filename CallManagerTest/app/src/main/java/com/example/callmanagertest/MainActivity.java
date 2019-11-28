@@ -33,7 +33,11 @@ public class MainActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                     Manifest.permission.READ_PHONE_STATE)){
                 ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+                        new String[]{Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.CALL_PHONE,
+                                Manifest.permission.PROCESS_OUTGOING_CALLS,
+                                Manifest.permission.READ_CALL_LOG, Manifest.permission.MANAGE_OWN_CALLS
+                        }, 1);
             } else {
                 ActivityCompat.requestPermissions(MainActivity.this,
                         new String[]{Manifest.permission.READ_PHONE_STATE}, 1);

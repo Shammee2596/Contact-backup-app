@@ -2,9 +2,16 @@ package com.example.contactapp_v3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +37,19 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        if (ContextCompat.checkSelfPermission(RegisterActivity.this,
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(RegisterActivity.this,
+                    Manifest.permission.READ_PHONE_STATE)){
+                ActivityCompat.requestPermissions(RegisterActivity.this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.CALL_PHONE, Manifest.permission.PROCESS_OUTGOING_CALLS}, 1);
+            } else {
+                ActivityCompat.requestPermissions(RegisterActivity.this,
+                        new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            }
+        }
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -89,6 +109,19 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    public String readDefaultPhoneNo() {
+        TelephonyManager telephonyManager = (TelephonyManager) RegisterActivity.this.getSystemService(Context.TELEPHONY_SERVICE);
+        if (ContextCompat.checkSelfPermission(RegisterActivity.this,
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED){
+            return "--";
+        }
+
+        String phone = telephonyManager.getLine1Number();
+        Toast.makeText(RegisterActivity.this, phone, Toast.LENGTH_LONG).show();
+        return phone;
+    }
+
     private void registerUser(final String name, final String phone, final String email, String password){
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -97,21 +130,38 @@ public class RegisterActivity extends AppCompatActivity {
 
                     User user = new User(name,email,phone);
                     FirebaseDatabase.getInstance().getReference("Users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(readDefaultPhoneNo())
                             .setValue(user);
+                    //Toast.makeText(RegisterActivity.this, someMethod(), Toast.LENGTH_LONG).show();
 
-
-                    Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(mainIntent);
+//                    Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
+//                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                    startActivity(mainIntent);
                     Toast.makeText(RegisterActivity.this, "Authentication successful.",
                             Toast.LENGTH_LONG).show();
-                    finish();
+                   // finish();
 
                 }
             }
         });
 
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(RegisterActivity.this,
+                            Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(RegisterActivity.this, "Permission granted", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Permission not granted", Toast.LENGTH_LONG).show();
+                }
+                return;
+        }
     }
 }
