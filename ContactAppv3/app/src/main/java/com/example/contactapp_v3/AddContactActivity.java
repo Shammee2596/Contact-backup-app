@@ -22,6 +22,7 @@ public class AddContactActivity extends AppCompatActivity {
     ImageView image;
     ContactAddService contactAddService;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
