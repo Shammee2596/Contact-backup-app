@@ -39,7 +39,7 @@ public class ContactAddService {
         return ret;
     }
 
-    public void addContactToSystemDatabase(String name, String phone,String phoneType,String email){
+    private void addContactToSystemDatabase(String name, String phone,String phoneType, String email){
         Uri contactsUri = ContactsContract.Data.CONTENT_URI;
         long rowContactId = getRawContactId();
         insertContactDisplayName(contactsUri, rowContactId, name);

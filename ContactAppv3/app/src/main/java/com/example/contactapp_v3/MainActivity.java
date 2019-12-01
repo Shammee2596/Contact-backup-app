@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.operations.ContactAddService;
 import com.example.contactapp_v3.reader.ContactReader;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -37,8 +41,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,23 +54,23 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private FirebaseRecyclerAdapter adapter;
+    private List<Contact> phoneContactList = null;
 
     private TextView textViewAddContact;
+    private ContactAddService contactAddService;
 
+    public static Context context;
+    public static boolean calling = false;
+    public static AtomicInteger atomicInteger = new AtomicInteger(0);
     public static final List<Contact> contactList = new ArrayList<>();
-
-    int ALL_PERMISSIONS = 101;
-    final String[] permissions = new String[]{Manifest.permission.READ_CONTACTS,
-            Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CALL_PHONE, Manifest.permission.WRITE_CONTACTS,
-            Manifest.permission.READ_PHONE_STATE};
+    public static DatabaseReference referenceTrueCaller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, permissions, ALL_PERMISSIONS);
+        context = this;
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -72,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        contactAddService = new ContactAddService(this);
 
         textViewAddContact = findViewById(R.id.addContact);
 
@@ -98,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        referenceTrueCaller = FirebaseDatabase.getInstance().getReference("Truecaller");
+
         textViewAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        setRepeatingAsyncTask();
 
     }
 
@@ -115,13 +127,17 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null) {
             sendToStartPage();
         } else {
-            setRepeatingAsyncTask();
             fetch();
             adapter.startListening();
         }
     }
 
     private void setRepeatingAsyncTask() {
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (Exception e) {
+
+        }
 
         final Handler handler = new Handler();
         Timer timer = new Timer();
@@ -171,111 +187,136 @@ public class MainActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             sendToStartPage();
         }
+        if (item.getItemId() == R.id.menu_import) {
+            while (phoneContactList == null) ;
+            mergeString(phoneContactList, contactList);
+        }
         return true;
     }
 
-    private void fetch() {
-        Query query = FirebaseDatabase.getInstance().getReference("Contact")
-                .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("name")
-                .startAt("").endAt("" + "\uf8ff");
+    private void mergeString(List<Contact> phoneContactList, List<Contact> firebaseContactList) {
 
-        FirebaseRecyclerOptions<Contact> options =
-                new FirebaseRecyclerOptions.Builder<Contact>()
-                        .setQuery(query, Contact.class)
-                        .setLifecycleOwner(this)
-                        .build();
+        for (Contact firebaseContact : firebaseContactList) {
+            boolean found = false;
+            for (Contact phoneContact : phoneContactList) {
+                if (firebaseContact.getName().equals(phoneContact.getName())
+                        && firebaseContact.getNumber().equals(phoneContact.getNumber())) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                contactAddService.addToPhoneStorage(firebaseContact);
+            }
+        }
+    }
 
-        adapter = new FirebaseRecyclerAdapter<Contact, ViewHolder>(options) {
-            @Override
-            public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.items_contacts, parent, false);
+        private void fetch () {
+            Query query = FirebaseDatabase.getInstance().getReference("Contact")
+                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild("name")
+                    .startAt("").endAt("" + "\uf8ff");
+
+            FirebaseRecyclerOptions<Contact> options =
+                    new FirebaseRecyclerOptions.Builder<Contact>()
+                            .setQuery(query, Contact.class)
+                            .setLifecycleOwner(this)
+                            .build();
+
+            adapter = new FirebaseRecyclerAdapter<Contact, ViewHolder>(options) {
+                @Override
+                public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.items_contacts, parent, false);
 
 
-                return new ViewHolder(view);
+                    return new ViewHolder(view);
+                }
+
+
+                @Override
+                protected void onBindViewHolder(ViewHolder holder, final int position, Contact model) {
+                    holder.setName(model.getName());
+                    holder.setNumber(model.getNumber());
+
+                    holder.item_contact.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (position >= contactList.size()) return;
+                            Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
+                            Contact currentContact = contactList.get(position);
+                            Intent intent = new Intent(MainActivity.this, ContactDetailsActivity.class);
+                            intent.putExtra("detailsContact", currentContact);
+                            startActivity(intent);
+                        }
+                    });
+                }
+
+            };
+            recyclerView.setAdapter(adapter);
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView txtName, txtNumber;
+            Button button;
+
+            LinearLayout item_contact;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                item_contact = itemView.findViewById(R.id.contact_item);
+                txtName = itemView.findViewById(R.id.contact_name);
+                txtNumber = itemView.findViewById(R.id.number);
+                button = itemView.findViewById(R.id.contact_button);
+
+            }
+
+            public void setName(String name) {
+                txtName.setText(name);
+            }
+
+            public void setNumber(String number) {
+                txtNumber.setText(number);
             }
 
 
-            @Override
-            protected void onBindViewHolder(ViewHolder holder, final int position, Contact model) {
-                holder.setName(model.getName());
-                holder.setNumber(model.getNumber());
+        }
 
-                holder.item_contact.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (position >= contactList.size()) return;
-                        Toast.makeText(MainActivity.this, contactList.get(position).getName(), Toast.LENGTH_SHORT).show();
-                        Contact currentContact = contactList.get(position);
-                        Intent intent = new Intent(MainActivity.this, ContactDetailsActivity.class);
-                        intent.putExtra("detailsContact", currentContact);
-                        startActivity(intent);
+        class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
+            ContactReader contactReader = new ContactReader(MainActivity.this);
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
+                try {
+                    System.out.println("Async called");
+
+                    while (contactReader.getContacts() == null) ;
+                    phoneContactList = contactReader.getContacts();
+
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
+                            .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                    for (Contact contact : phoneContactList) {
+                        boolean found = false;
+                        for (Contact contact1 : contactList) {
+                            if (contact.findContact(contact1)) {
+                                found = true;
+
+                            }
+                        }
+                        if (!found) {
+                            reference.push().setValue(contact);
+                            referenceTrueCaller.child(contact.getNumber()).push().setValue(contact.getName());
+                        }
                     }
-                });
+                } catch (Exception e) {
+
+                }
+                return null;
             }
-
-        };
-        recyclerView.setAdapter(adapter);
-    }
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtNumber;
-        Button button;
-
-        LinearLayout item_contact;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            item_contact = itemView.findViewById(R.id.contact_item);
-            txtName = itemView.findViewById(R.id.contact_name);
-            txtNumber = itemView.findViewById(R.id.number);
-            button = itemView.findViewById(R.id.contact_button);
-
         }
 
-        public void setName(String name) {
-            txtName.setText(name);
-        }
 
-        public void setNumber(String number) {
-            txtNumber.setText(number);
-        }
 
 
     }
-
-    class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
-        ContactReader contactReader = new ContactReader(MainActivity.this);
-        List<Contact> phoneContactList;
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            return null;
-            //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
-//            System.out.println("Async called");
-//
-//            while (contactReader.getContacts() == null);
-//            phoneContactList = contactReader.getContacts();
-//
-//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
-//                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//
-//            for (Contact contact: phoneContactList) {
-//                boolean found = false;
-//                for(Contact contact1: contactList){
-//                    if (contact.findContact(contact1)){
-//                        found = true;
-//
-//                    }
-//                }
-//                if(!found){
-//                    reference.push().setValue(contact);
-//                }
-//            }
-//            return null;
-        }
-    }
-
-
-}

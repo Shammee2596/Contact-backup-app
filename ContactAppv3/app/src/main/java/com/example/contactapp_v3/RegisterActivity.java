@@ -140,6 +140,8 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Authentication successful.",
                             Toast.LENGTH_LONG).show();
                    // finish();
+                    Intent intent = new Intent(RegisterActivity.this, StartActivity.class);
+                    startActivity(intent);
 
                 }
             }

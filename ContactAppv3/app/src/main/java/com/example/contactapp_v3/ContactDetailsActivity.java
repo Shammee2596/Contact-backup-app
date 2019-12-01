@@ -73,7 +73,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.menuItemEditContact) {
-//            Intent intent = new Intent(ContactDetails.this, EditContact.class);
+//            Intent intent = new Intent(ContactDetails.this, EditContactActivity.class);
 //            intent.putExtra("name", name);
 //            intent.putExtra("number", email);
 //            intent.putExtra("email", number);
