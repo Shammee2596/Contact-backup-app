@@ -48,7 +48,8 @@ public class InterceptCall extends BroadcastReceiver {
             @Override
             public void onCallStateChanged(int state, final String incomingNumber) {
                 String state1 = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
-                if (state1.equals(TelephonyManager.EXTRA_STATE_IDLE) || state1.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                if (state1.equals(TelephonyManager.EXTRA_STATE_IDLE)
+                        || state1.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
                     try {
                         MainActivity.referenceTrueCaller.child(incomingNumber).removeEventListener(listener);
 
@@ -62,7 +63,8 @@ public class InterceptCall extends BroadcastReceiver {
 
                     atomicInteger.set(1);
                     Toast.makeText(context, "Ringing - " + cnt, Toast.LENGTH_SHORT).show();
-                    mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager = (NotificationManager)
+                            context.getSystemService(Context.NOTIFICATION_SERVICE);
                     final List<String> names = new ArrayList<>();
 
                     System.out.println("incomingNumber : " + cnt + " " + incomingNumber);

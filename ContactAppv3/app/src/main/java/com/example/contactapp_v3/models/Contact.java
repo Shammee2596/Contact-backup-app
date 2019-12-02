@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 public class Contact implements Comparable<Contact>,Parcelable {
-    private String name, number;
+    private String name = "", number = "";
     private String email;
     private String label;
     private String lastName;
@@ -30,8 +30,15 @@ public class Contact implements Comparable<Contact>,Parcelable {
         this.isFavourite = isFavourite;
     }
 
-    public boolean findContact (Contact contact){
+    public boolean findContactByNumber(Contact contact){
         return number.equals(contact.getNumber());
+    }
+
+    public boolean findContact(Contact contact){
+        return findContactByName(contact) && findContactByNumber(contact);
+    }
+    public boolean findContactByName (Contact contact){
+        return name.equals(contact.getName());
     }
 
     public String getName() {
@@ -151,7 +158,7 @@ public class Contact implements Comparable<Contact>,Parcelable {
 
     @Override
     public int compareTo(Contact u) {
-        return name.compareTo(u.name);
+        return name.toLowerCase().compareTo(u.name.toLowerCase());
     }
 
     @Override

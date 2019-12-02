@@ -50,8 +50,7 @@ public class AddContactActivity extends AppCompatActivity {
 
                 contactAddService.addToPhoneStorage(contact);
 
-                Intent intent = new Intent(AddContactActivity.this, MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.repo.Repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +37,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
     boolean isFav = false;
     DatabaseReference databaseReference;
     private Contact contact;
-    private Query query;
+    private Repository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,8 @@ public class ContactDetailsActivity extends AppCompatActivity {
         tvphone = findViewById(R.id.profile_number);
         tvmail =  findViewById(R.id.profile_Email);
 
+        this.repository = Repository.getInstance();
+
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null){
@@ -54,9 +57,8 @@ public class ContactDetailsActivity extends AppCompatActivity {
             tvname.setText(contact.getName());
             tvphone.setText(contact.getNumber());
             tvmail.setText(contact.getEmail());
-            this.databaseReference = FirebaseDatabase.getInstance().getReference("Contact")
-                    .child("User").child(FirebaseAuth.getInstance().getCurrentUser().
-                            getUid()).child(contact.get_id());
+            this.databaseReference = repository.getUserReference().child("contacts")
+                    .child(contact.get_id());
 
         }
     }
@@ -90,6 +92,8 @@ public class ContactDetailsActivity extends AppCompatActivity {
         }
         if (item.getItemId() == R.id.menuItemDeleteContact) {
             this.databaseReference.removeValue();
+            this.repository.getUserReference().child("trash").push().setValue(this.contact);
+            finish();
         }
         /*if (item.getItemId() == R.id.menuItemBlockContact){
             ContentValues values = new ContentValues();
