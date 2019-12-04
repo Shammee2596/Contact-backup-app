@@ -16,8 +16,13 @@
         app:showAsAction="ifRoom"
     />
     <item
+        android:id="@+id/menu_trash"
+        android:title="Trash"
+        />
+    <item
         android:id="@+id/menu_log_out"
         android:title="Log out"
         />
+
 
 </menu>

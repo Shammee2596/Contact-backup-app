@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                 });
             }
         };
-        timer.schedule(task, 0, 10 * 1000);
+        timer.schedule(task, 0, 60 * 1000);
     }
 
     private void sendToStartPage() {
@@ -241,6 +241,10 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         if (item.getItemId() == R.id.menu_import) {
             while (phoneContactList == null);
             mergeString(phoneContactList, contactList);
+        }
+        if (item.getItemId() == R.id.menu_trash) {
+            Intent intent = new Intent(MainActivity.this, TrashActivity.class);
+            startActivity(intent);
         }
         return true;
     }
