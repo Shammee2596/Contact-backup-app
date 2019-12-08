@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.repo.Repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,23 +15,33 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ContactAddService {
 
     private Context context;
+    private Repository repository;
+    private DatabaseReference referenceContacts;
+    private DatabaseReference referenceTrash;
 
     public ContactAddService(Context context){
         this.context = context;
-        //addToPhoneStorage(contact);
-        //addToFirebase(contact);
+        this.repository = Repository.getInstance();
+    }
+
+    public ContactAddService(){
+        this.repository = Repository.getInstance();
     }
 
     public void addToPhoneStorage(Contact contact){
-        addContactToSystemDatabase(contact.getName(), contact.getNumber(), "home", contact.getEmail());
+        addContactToSystemDatabase(contact.getName(),
+                contact.getNumber(), "home", contact.getEmail());
     }
 
-    public void addToFirebase(Contact contact){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Contact")
-                .child("User").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    public void addToFirebaseContact(Contact contact){
+        DatabaseReference reference = repository.getUserReference().child("contacts");
         reference.push().setValue(contact);
     }
 
+    public void addToFirebaseTrash(Contact contact){
+        DatabaseReference reference = repository.getUserReference().child("trash");
+        reference.push().setValue(contact);
+    }
 
     private long getRawContactId() {
         ContentValues contentValues = new ContentValues();

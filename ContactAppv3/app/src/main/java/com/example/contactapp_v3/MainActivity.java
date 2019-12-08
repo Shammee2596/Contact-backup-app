@@ -273,32 +273,6 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         startActivity(intent);
     }
 
-//    public class ViewHolder extends RecyclerView.ViewHolder {
-//        TextView txtName, txtNumber;
-//        Button button;
-//
-//        LinearLayout item_contact;
-//
-//        public ViewHolder(View itemView) {
-//            super(itemView);
-//            item_contact = itemView.findViewById(R.id.contact_item);
-//            txtName = itemView.findViewById(R.id.contact_name);
-//            txtNumber = itemView.findViewById(R.id.number);
-//            button = itemView.findViewById(R.id.contact_button);
-//
-//        }
-//
-//        public void setName(String name) {
-//            txtName.setText(name);
-//        }
-//
-//        public void setNumber(String number) {
-//            txtNumber.setText(number);
-//        }
-//
-//
-//    }
-
     class ContactAsyncTask extends AsyncTask<Void, Void, Void> {
         ContactReader contactReader = new ContactReader(MainActivity.this);
         Repository repository;
