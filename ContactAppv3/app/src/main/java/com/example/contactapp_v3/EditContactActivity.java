@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.repo.Repository;
 import com.google.firebase.database.DatabaseReference;
 
 public class EditContactActivity extends AppCompatActivity {
@@ -17,8 +18,8 @@ public class EditContactActivity extends AppCompatActivity {
     String fName, lName, number, emailAddress,label1;
     Button save;
     DatabaseReference reference;
-
-    Contact contact;
+    private Contact contact;
+    private Repository repository;
     Long contactId;
 
     @Override
@@ -34,18 +35,35 @@ public class EditContactActivity extends AppCompatActivity {
 
         save = findViewById(R.id.editContactButton);
 
-        fname = getIntent().getStringExtra("name");
-        email = getIntent().getStringExtra("email");
-        phone = getIntent().getStringExtra("number");
-        contactId = getIntent().getLongExtra("contactId",0);
+//        fname = getIntent().getStringExtra("name");
+//        email = getIntent().getStringExtra("email");
+//        phone = getIntent().getStringExtra("number");
+//        contactId = getIntent().getLongExtra("contactId",0);
 
-        cFname.setText(fname);
-        cPhone.setText(email);
-        cEmail.setText(phone);
+        repository = Repository.getInstance();
+
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            this.contact = bundle.getParcelable("edit_contact");
+            cFname.setText(this.contact.getName());
+            cPhone.setText(this.contact.getNumber());
+            cEmail.setText(this.contact.getEmail());
+            // todo: set other fields
+        }
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // todo: edit contact
+                String name = cFname.getText().toString();
+                String number = cPhone.getText().toString();
+                String email = cEmail.getText().toString();
+                contact.setName(name);
+                contact.setNumber(number);
+                contact.setEmail(email);
+                repository.getUserReference().child("contacts")
+                        .child(contact.get_id()).setValue(contact);
 
             }
         });

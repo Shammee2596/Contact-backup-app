@@ -67,7 +67,8 @@ public class ContactDetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
         this.menu = menu;
-        if (isFav) menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white));
+        if (isFav) menu.getItem(1).setIcon(ContextCompat
+                .getDrawable(this, R.drawable.ic_star_white));
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -75,12 +76,10 @@ public class ContactDetailsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.menuItemEditContact) {
-//            Intent intent = new Intent(ContactDetails.this, EditContactActivity.class);
-//            intent.putExtra("name", name);
-//            intent.putExtra("number", email);
-//            intent.putExtra("email", number);
-//            intent.putExtra("contactId", id);
-//            startActivity(intent);
+            Intent intent = new Intent(ContactDetailsActivity.this,
+                    EditContactActivity.class);
+            intent.putExtra("edit_contact", contact);
+            startActivity(intent);
         }
         if (item.getItemId() == R.id.menuItemFavouriteContact) {
 //            contentValues = new ContentValues();

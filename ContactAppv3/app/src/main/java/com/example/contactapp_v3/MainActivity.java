@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                     contact.set_id(postSnapshot.getKey());
                     contactList.add(contact);
                 }
+                atomicInteger.set(1);
                 Collections.sort(contactList);
                 Toast.makeText(MainActivity.this, String.valueOf(contactList.size()),
                         Toast.LENGTH_LONG).show();
@@ -286,12 +287,15 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         @Override
         protected Void doInBackground(Void... voids) {
             //Toast.makeText(MainActivity.this, "Async called", Toast.LENGTH_LONG).show();
+            if (atomicInteger.get() == 0){
+                System.out.println("Async returned");
+                return null;
+            }
             try {
                 System.out.println("Async called");
-
-                while (contactReader.getContacts() == null);
-                phoneContactList = contactReader.getContacts();
-
+                do {
+                    phoneContactList = contactReader.getContacts();
+                } while (phoneContactList == null);
 
                 for (Contact contact : phoneContactList) {
                     boolean found = false;
