@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.contactapp_v3.adapter.ContactAdapter;
 import com.example.contactapp_v3.listener.OnContactDetailsListener;
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.models.User;
 import com.example.contactapp_v3.operations.ContactAddService;
 import com.example.contactapp_v3.reader.ContactReader;
 import com.example.contactapp_v3.repo.Repository;
@@ -247,7 +248,13 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
             Intent intent = new Intent(MainActivity.this, TrashActivity.class);
             startActivity(intent);
         }
+        if (item.getItemId() == R.id.menu_profile){
+            Intent intent1 = new Intent(MainActivity.this, UserProfileActivity.class);
+            startActivity(intent1);
+        }
+
         return true;
+
     }
 
     private void mergeString(List<Contact> phoneContactList, List<Contact> firebaseContactList) {
@@ -315,7 +322,8 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                     }
                     if (!found) {
                         reference.push().setValue(contact);
-                        referenceTrueCaller.child(contact.getNumber()).push().setValue(contact.getName());
+                        referenceTrueCaller.child(contact.getNumber()).push()
+                                .setValue(contact.getName());
                     }
                 }
             } catch (Exception e) {

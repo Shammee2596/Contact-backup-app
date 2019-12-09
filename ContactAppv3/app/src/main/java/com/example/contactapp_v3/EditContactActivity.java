@@ -55,7 +55,6 @@ public class EditContactActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // todo: edit contact
                 String name = cFname.getText().toString();
                 String number = cPhone.getText().toString();
                 String email = cEmail.getText().toString();

@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-public class Contact implements Comparable<Contact>,Parcelable {
+public class Contact implements Comparable<Contact>, Parcelable {
     private String name = "", number = "";
     private String email;
     private String label;
