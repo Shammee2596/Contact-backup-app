@@ -42,4 +42,18 @@
         android:layout_below="@+id/profile_number"
         android:layout_centerHorizontal="true" />
 
+    <Button
+        android:id="@+id/btn_whatsapp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Open with WhatsApp"
+        />
+
+    <Button
+        android:id="@+id/btn_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Message"
+        />
+
 </LinearLayout>

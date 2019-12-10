@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.example.contactapp_v3.adapter.ContactAdapter;
 import com.example.contactapp_v3.listener.OnContactDetailsListener;
 import com.example.contactapp_v3.models.Contact;
-import com.example.contactapp_v3.models.User;
 import com.example.contactapp_v3.operations.ContactAddService;
 import com.example.contactapp_v3.reader.ContactReader;
 import com.example.contactapp_v3.repo.Repository;
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         }
         if (item.getItemId() == R.id.menu_import) {
             while (phoneContactList == null);
-            mergeString(phoneContactList, contactList);
+            mergeContact(phoneContactList, contactList);
         }
         if (item.getItemId() == R.id.menu_trash) {
             Intent intent = new Intent(MainActivity.this, TrashActivity.class);
@@ -252,12 +251,14 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
             Intent intent1 = new Intent(MainActivity.this, UserProfileActivity.class);
             startActivity(intent1);
         }
-
+        if (item.getItemId() == R.id.menu_fav){
+            Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
+            startActivity(intent);
+        }
         return true;
-
     }
 
-    private void mergeString(List<Contact> phoneContactList, List<Contact> firebaseContactList) {
+    private void mergeContact(List<Contact> phoneContactList, List<Contact> firebaseContactList) {
 
         for (Contact firebaseContact : firebaseContactList) {
             boolean found = false;
@@ -321,13 +322,17 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                        }
                     }
                     if (!found) {
+                        String num = contact.getNumber();
+                        if(!contact.getNumber().contains("+88")) {
+                            num = "+88" + contact.getNumber();
+                        }
                         reference.push().setValue(contact);
-                        referenceTrueCaller.child(contact.getNumber()).push()
+                        referenceTrueCaller.child(num).push()
                                 .setValue(contact.getName());
                     }
                 }
             } catch (Exception e) {
-
+                System.out.println(e.toString());
             }
             return null;
         }

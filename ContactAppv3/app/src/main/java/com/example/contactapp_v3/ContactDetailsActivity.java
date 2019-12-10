@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,10 +31,11 @@ public class ContactDetailsActivity extends AppCompatActivity {
 
     private Button btn, starButton;
     private TextView tvname, tvphone,tvmail;
-    String name,number, email;
     long id;
     ContentValues contentValues;
     private Menu menu;
+    private Button btnWhatsApp;
+    private Button btnMessage;
     boolean isFav = false;
     DatabaseReference databaseReference;
     private Contact contact;
@@ -48,6 +50,9 @@ public class ContactDetailsActivity extends AppCompatActivity {
         tvphone = findViewById(R.id.profile_number);
         tvmail =  findViewById(R.id.profile_Email);
 
+        btnWhatsApp = findViewById(R.id.btn_whatsapp);
+        btnMessage = findViewById(R.id.btn_message);
+
         this.repository = Repository.getInstance();
 
         Bundle bundle = getIntent().getExtras();
@@ -61,13 +66,37 @@ public class ContactDetailsActivity extends AppCompatActivity {
                     .child(contact.get_id());
 
         }
+
+        btnWhatsApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String number = contact.getNumber();
+                if (!contact.getNumber().contains("+88")){
+                    number = "+88" + contact.getNumber();
+                }
+                Uri uri = Uri.parse("smsto:" + number);
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO, uri);
+                sendIntent.setPackage("com.whatsapp");
+                startActivity(sendIntent);
+            }
+        });
+
+        btnMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(Intent.ACTION_MAIN);
+//                intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                intent.setType("vnd.android-dir/mms-sms");
+//                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
         this.menu = menu;
-        if (isFav) menu.getItem(1).setIcon(ContextCompat
+        if (contact.isFavourite()) menu.getItem(1).setIcon(ContextCompat
                 .getDrawable(this, R.drawable.ic_star_white));
 
         return super.onCreateOptionsMenu(menu);
@@ -82,12 +111,19 @@ public class ContactDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if (item.getItemId() == R.id.menuItemFavouriteContact) {
-//            contentValues = new ContentValues();
-//            contentValues.put(ContactsContract.Contacts.STARRED, 1);
-//            getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
-//                    contentValues, ContactsContract.Contacts._ID + "=" + id, null);
-//            Toast.makeText(ContactDetails.this, "Contact added to favourite", Toast.LENGTH_SHORT).show();
-//            menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_star_white));
+            contentValues = new ContentValues();
+            contentValues.put(ContactsContract.Contacts.STARRED, 1);
+            getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
+                    contentValues, ContactsContract.Contacts._ID + "=" + id, null);
+            Toast.makeText(ContactDetailsActivity.this,
+                    "Contact added to favourite", Toast.LENGTH_SHORT).show();
+            menu.getItem(1).setIcon(ContextCompat
+                    .getDrawable(this, R.drawable.ic_star_white));
+            contact.setFavourite(true);
+            this.repository.getUserReference().child("contacts")
+                    .child(contact.get_id()).setValue(contact);
+            this.repository.getUserGroupFavoriteReference()
+                    .push().setValue(contact);
         }
         if (item.getItemId() == R.id.menuItemDeleteContact) {
             this.databaseReference.removeValue();
@@ -102,8 +138,6 @@ public class ContactDetailsActivity extends AppCompatActivity {
                 Uri uri = getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
             }
         }
-
-
         return true;
     }
 

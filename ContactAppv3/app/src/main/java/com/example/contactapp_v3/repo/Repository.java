@@ -25,4 +25,12 @@ public class Repository {
                         getUid());
     }
 
+    public DatabaseReference getUserGroupReference(){
+        return getUserReference().child("groups");
+    }
+
+    public DatabaseReference getUserGroupFavoriteReference(){
+        return getUserGroupReference().child("favorites");
+    }
+
 }
