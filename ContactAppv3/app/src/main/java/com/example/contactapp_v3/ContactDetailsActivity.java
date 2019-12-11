@@ -2,11 +2,14 @@ package com.example.contactapp_v3;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +33,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.contactapp_v3.MainActivity.context;
+
 public class ContactDetailsActivity extends AppCompatActivity {
 
     private Button btn, starButton;
@@ -37,7 +43,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
     ContentValues contentValues;
     private Menu menu;
     private Button btnWhatsApp;
-    private Button btnMessage;
+    private LinearLayout btnMessage;
     boolean isFav = false;
     DatabaseReference databaseReference;
     private Contact contact;
@@ -53,12 +59,12 @@ public class ContactDetailsActivity extends AppCompatActivity {
 
         setTitle("Details");
 
-        tvname =  findViewById(R.id.profile_displayName);
+        tvname =  findViewById(R.id.prfile_displayName);
         tvphone = findViewById(R.id.profile_number);
-        tvmail =  findViewById(R.id.profile_Email);
+        tvmail =  findViewById(R.id.prfile_Email);
 
-        btnWhatsApp = findViewById(R.id.btn_whatsapp);
-        btnMessage = findViewById(R.id.btn_message);
+        btnWhatsApp = findViewById(R.id.btn_whatsApp);
+        btnMessage = findViewById(R.id.btn_message1);
 
         this.repository = Repository.getInstance();
 
@@ -69,6 +75,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
             tvname.setText(contact.getName());
             tvphone.setText(contact.getNumber());
             tvmail.setText(contact.getEmail());
+
             this.databaseReference = repository.getUserReference().child("contacts")
                     .child(contact.get_id());
 
@@ -91,10 +98,27 @@ public class ContactDetailsActivity extends AppCompatActivity {
         btnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(Intent.ACTION_MAIN);
-//                intent.addCategory(Intent.CATEGORY_DEFAULT);
-//                intent.setType("vnd.android-dir/mms-sms");
-//                startActivity(intent);
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
+                startActivity(intent);
+            }
+        });
+
+        LinearLayout call = findViewById(R.id.btn_call2);
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                Toast.makeText(context, "Enable call phone", Toast.LENGTH_LONG).show();
+
+                intentCall.setData(Uri.parse("tel:"+contact.getNumber()));
+
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(context, "Enable call phone in the settings", Toast.LENGTH_LONG).show();
+                }else {
+                    context.startActivity(intentCall);
+                }
             }
         });
     }

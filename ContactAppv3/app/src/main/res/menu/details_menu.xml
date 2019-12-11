@@ -16,18 +16,10 @@
         android:icon="@drawable/ic_star"
         app:showAsAction="ifRoom"
         />
-    <item
-        android:id="@+id/menuItemBlockContact"
-        android:orderInCategory="100"
-        android:title="Block"
-        android:icon="@drawable/ic_edit"
-        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuItemDeleteContact"
         android:orderInCategory="100"
         android:title="Delete"
-        android:icon="@drawable/ic_edit"
-        app:showAsAction="ifRoom"
         />
 </menu>
