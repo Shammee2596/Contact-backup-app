@@ -2,6 +2,7 @@ package com.example.contactapp_v3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +16,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import com.example.contactapp_v3.operations.ContactAddService;
 import com.example.contactapp_v3.reader.ContactReader;
 import com.example.contactapp_v3.repo.Repository;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -69,11 +72,14 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     private DatabaseReference referenceTrash;
     private Repository repository;
 
+    private FloatingActionButton button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        addToolBar();
         context = this;
 
         mAuth = FirebaseAuth.getInstance();
@@ -85,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         recyclerView.setHasFixedSize(true);
         contactAddService = new ContactAddService(this);
 
-        textViewAddContact = findViewById(R.id.addContact);
+        //textViewAddContact = findViewById(R.id.addContact);
+       // button = findViewById(R.id.buttonAddContact);
 
         detailsListener = this;
 
@@ -139,13 +146,13 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
             }
         });
 
-        textViewAddContact.setOnClickListener(new View.OnClickListener() {
+        /*textViewAddContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
         editTextSearchContact.addTextChangedListener(new TextWatcher() {
             int textLength = 0;
@@ -183,6 +190,11 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
             }
         });
         setRepeatingAsyncTask();
+    }
+
+    private void addToolBar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -235,24 +247,23 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        if (item.getItemId() == R.id.menu_log_out) {
-            FirebaseAuth.getInstance().signOut();
-            sendToStartPage();
-        }
-        if (item.getItemId() == R.id.menu_import) {
-            while (phoneContactList == null);
-            mergeContact(phoneContactList, contactList);
-        }
-        if (item.getItemId() == R.id.menu_trash) {
-            Intent intent = new Intent(MainActivity.this, TrashActivity.class);
+        if (item.getItemId() == R.id.addContact) {
+            Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
             startActivity(intent);
         }
-        if (item.getItemId() == R.id.menu_profile){
-            Intent intent1 = new Intent(MainActivity.this, UserProfileActivity.class);
-            startActivity(intent1);
+        if (item.getItemId() == R.id.menu_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
         }
+
+        if (item.getItemId() == R.id.menu_sync) {
+            while (phoneContactList == null);
+            mergeContact(phoneContactList, contactList);
+
+        }
+
         if (item.getItemId() == R.id.menu_fav){
-            Intent intent = new Intent(MainActivity.this, FavoriteActivity.class);
+            Intent intent = new Intent(MainActivity.this, FavoriteContactActivity.class);
             startActivity(intent);
         }
         return true;

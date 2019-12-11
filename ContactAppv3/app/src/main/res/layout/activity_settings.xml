@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SettingsActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        />
+
+    <TextView
+        android:id="@+id/settings_profile"
+        android:layout_width="match_parent"
+        android:layout_height= "wrap_content"
+        android:focusable="true"
+        android:clickable="true"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="User Information"
+        android:textSize="20sp"
+       />
+
+    <TextView
+        android:id="@+id/settings_thrash"
+        android:layout_width="match_parent"
+        android:layout_height= "wrap_content"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="Thrash"
+        android:textSize="20sp"
+    />
+
+    <TextView
+        android:id="@+id/settings_log_out"
+        android:layout_width="match_parent"
+        android:layout_height= "wrap_content"
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="Log out"
+        android:textSize="20sp"
+    />
+
+</LinearLayout>

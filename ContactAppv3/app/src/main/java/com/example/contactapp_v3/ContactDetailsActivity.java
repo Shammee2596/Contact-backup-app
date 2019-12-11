@@ -1,8 +1,10 @@
 package com.example.contactapp_v3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -46,6 +48,11 @@ public class ContactDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_details);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        setTitle("Details");
+
         tvname =  findViewById(R.id.profile_displayName);
         tvphone = findViewById(R.id.profile_number);
         tvmail =  findViewById(R.id.profile_Email);
@@ -57,7 +64,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle != null){
+         if (bundle != null){
             this.contact = bundle.getParcelable("detailsContact");
             tvname.setText(contact.getName());
             tvphone.setText(contact.getNumber());

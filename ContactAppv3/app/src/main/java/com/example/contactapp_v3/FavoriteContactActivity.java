@@ -2,6 +2,7 @@ package com.example.contactapp_v3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FavoriteActivity extends AppCompatActivity implements OnContactDetailsListener {
+public class FavoriteContactActivity extends AppCompatActivity implements OnContactDetailsListener {
 
     private RecyclerView recyclerView;
     private List<Contact> favoriteList;
@@ -32,6 +33,8 @@ public class FavoriteActivity extends AppCompatActivity implements OnContactDeta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         detailsListener = this;
         favoriteList = new ArrayList<>();
@@ -54,7 +57,7 @@ public class FavoriteActivity extends AppCompatActivity implements OnContactDeta
                     favoriteList.add(contact);
                 }
                 Collections.sort(favoriteList);
-                recyclerView.setAdapter(new ContactAdapter(FavoriteActivity.this,
+                recyclerView.setAdapter(new ContactAdapter(FavoriteContactActivity.this,
                         favoriteList, detailsListener));
             }
 

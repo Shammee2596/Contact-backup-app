@@ -52,12 +52,6 @@
             android:hint="Phone number"
             android:inputType="phone" />
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="31dp"
-            android:layout_height="9dp"
-            android:prompt="@string/app_name" />
-
         <EditText
             android:id="@+id/createContactEmail"
             android:layout_width="match_parent"
