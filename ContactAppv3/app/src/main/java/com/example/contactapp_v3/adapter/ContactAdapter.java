@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.contactapp_v3.R;
@@ -30,12 +32,15 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     private Context context;
     private List<Contact> contactList;
     final OnContactDetailsListener detailsListener;
+    Drawable mDrawable;
 
     public ContactAdapter(Context context, List<Contact> contactList,
                           OnContactDetailsListener detailsListener) {
         this.context = context;
         this.contactList = contactList;
         this.detailsListener = detailsListener;
+        mDrawable = ContextCompat.getDrawable(context, R.drawable.circle);
+
     }
 
     public void setContactList(List<Contact> contactList1){
@@ -103,8 +108,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            item_contact = itemView.findViewById(R.id.contact_item);
+            item_contact = itemView.findViewById(R.id.contact_item1);
             name = itemView.findViewById(R.id.contact_name);
             number = itemView.findViewById(R.id.number);
             button = itemView.findViewById(R.id.contact_button);

@@ -56,8 +56,10 @@ public class ContactDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Details");
+
 
         tvname =  findViewById(R.id.prfile_displayName);
         tvphone = findViewById(R.id.profile_number);
@@ -95,14 +97,12 @@ public class ContactDetailsActivity extends AppCompatActivity {
             }
         });
 
-        btnMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_APP_MESSAGING);
-                startActivity(intent);
-            }
-        });
+//        btnMessage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         LinearLayout call = findViewById(R.id.btn_call2);
         call.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +121,12 @@ public class ContactDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void sendMessage(View view) {
+        Uri sms_uri = Uri.parse("smsto:" + contact.getNumber());
+        Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
+        startActivity(sms_intent);
     }
 
     @Override

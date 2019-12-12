@@ -2,45 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     android:orientation="horizontal"
-    android:weightSum="10"
     android:id="@+id/contact_item">
 
     <Button
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="36dp"
         android:layout_gravity="center"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_person"/>
+        android:layout_height="36dp"
+        android:layout_marginLeft="8dp"
+        android:text="A"
+        android:background="@drawable/circle"/>
 
     <LinearLayout
-        android:padding="10dp"
-        android:layout_width="0dp"
+        android:padding="4dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
-        android:orientation="vertical">
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical"
+        android:id="@+id/contact_item1">
 
         <TextView
             android:id="@+id/contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="name"
-            android:textSize="16sp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="number"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:clickable="true"
             />
     </LinearLayout>
     <Button
         android:id="@+id/contact_button"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/ic_phone"/>

@@ -12,9 +12,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".FavoriteContactActivity" />
-        <activity android:name=".UserProfileActivity" />
+        <activity android:name=".UserProfileActivity"
+            android:parentActivityName=".SettingsActivity"/>
         <activity android:name=".TrashActivity" />
-        <activity android:name=".EditContactActivity" />
+        <activity android:name=".EditContactActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".LauncherActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">

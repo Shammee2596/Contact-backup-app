@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:id="@+id/contacts">
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-  <EditText
-        android:id="@+id/editTextSearchContact"
-        android:layout_width = "match_parent"
-        android:layout_height = "wrap_content"
-        android:layout_marginTop = "15dp"
-        android:layout_marginBottom = "15dp"
-        android:drawableLeft = "@drawable/ic_search"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_contacts"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <EditText
+            android:id="@+id/editTextSearchContact"
+            android:layout_width = "match_parent"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "64dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="Search contact"
+            android:drawableStart = "@drawable/ic_search" />
 
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonAddContact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_person_add"
-        android:backgroundTint="#5252FF" />-->
-</LinearLayout>
+        android:backgroundTint="#5252FF" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
