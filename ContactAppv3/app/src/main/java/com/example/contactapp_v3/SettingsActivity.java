@@ -25,7 +25,11 @@ public class SettingsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow);
+
         setTitle("Settings");
+
 
         profile = findViewById(R.id.settings_profile);
         thrash = findViewById(R.id.settings_thrash);

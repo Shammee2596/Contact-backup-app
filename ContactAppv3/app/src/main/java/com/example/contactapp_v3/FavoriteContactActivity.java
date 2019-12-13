@@ -36,6 +36,10 @@ public class FavoriteContactActivity extends AppCompatActivity implements OnCont
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow);
+        setTitle("Favourites");
+
         detailsListener = this;
         favoriteList = new ArrayList<>();
 

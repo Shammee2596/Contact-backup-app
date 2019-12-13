@@ -118,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         String phone = telephonyManager.getLine1Number();
-        Toast.makeText(RegisterActivity.this, phone, Toast.LENGTH_LONG).show();
+        //Toast.makeText(RegisterActivity.this, phone, Toast.LENGTH_LONG).show();
         return phone;
     }
 
@@ -129,14 +129,11 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
 
                     User user = new User(name,email,phone);
-                    FirebaseDatabase.getInstance().getReference("Users")
-                            .child(readDefaultPhoneNo())
-                            .setValue(user);
-                    //Toast.makeText(RegisterActivity.this, someMethod(), Toast.LENGTH_LONG).show();
 
-//                    Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-//                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(mainIntent);
+                    FirebaseDatabase.getInstance().getReference("Users")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(user);
+
                     Toast.makeText(RegisterActivity.this, "Authentication successful.",
                             Toast.LENGTH_LONG).show();
                    // finish();

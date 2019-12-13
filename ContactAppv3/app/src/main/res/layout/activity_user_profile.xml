@@ -4,6 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="250dp">
@@ -46,6 +51,7 @@
                 android:layout_height="36dp"
                 android:src="@drawable/ic_email"/>
             <TextView
+                android:id="@+id/profile_email1"
                 android:textStyle="bold"
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
@@ -64,6 +70,7 @@
                 android:layout_height="36dp"
                 android:src="@drawable/ic_phone"/>
             <TextView
+                android:id="@+id/profile_number1"
                 android:textStyle="bold"
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"

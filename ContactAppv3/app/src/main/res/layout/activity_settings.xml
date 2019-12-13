@@ -22,7 +22,12 @@
         android:paddingBottom="15dp"
         android:text="User Information"
         android:textSize="20sp"
+        android:textColor="#000"
        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/settings_thrash"
@@ -33,7 +38,12 @@
         android:paddingBottom="15dp"
         android:text="Thrash"
         android:textSize="20sp"
-    />
+        android:textColor="#000"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
     <TextView
         android:id="@+id/settings_log_out"
@@ -44,6 +54,10 @@
         android:paddingBottom="15dp"
         android:text="Log out"
         android:textSize="20sp"
+        android:textColor="#000"
     />
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 </LinearLayout>

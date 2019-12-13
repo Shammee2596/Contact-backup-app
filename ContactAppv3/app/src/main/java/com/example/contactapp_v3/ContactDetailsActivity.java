@@ -25,19 +25,11 @@ import android.widget.Toast;
 
 import com.example.contactapp_v3.models.Contact;
 import com.example.contactapp_v3.repo.Repository;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-
 import static com.example.contactapp_v3.MainActivity.context;
 
 public class ContactDetailsActivity extends AppCompatActivity {
 
-    private Button btn, starButton;
     private TextView tvname, tvphone,tvmail;
     long id;
     ContentValues contentValues;
@@ -97,19 +89,12 @@ public class ContactDetailsActivity extends AppCompatActivity {
             }
         });
 
-//        btnMessage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-
         LinearLayout call = findViewById(R.id.btn_call2);
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentCall = new Intent(Intent.ACTION_CALL);
-                Toast.makeText(context, "Enable call phone", Toast.LENGTH_LONG).show();
+               // Toast.makeText(context, "Enable call phone", Toast.LENGTH_LONG).show();
 
                 intentCall.setData(Uri.parse("tel:"+contact.getNumber()));
 
@@ -167,26 +152,6 @@ public class ContactDetailsActivity extends AppCompatActivity {
             this.repository.getUserReference().child("trash").push().setValue(this.contact);
             finish();
         }
-        /*if (item.getItemId() == R.id.menuItemBlockContact){
-            ContentValues values = new ContentValues();
-            values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, number);
-            if (isAppAsDefaultDialer()){
-                Toast.makeText(this, "Default", Toast.LENGTH_LONG).show();
-                Uri uri = getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
-            }
-        }
-        return true;
-    }
-
-    private boolean isAppAsDefaultDialer() {
-        TelecomManager telecom = this.getSystemService(TelecomManager.class);
-
-        Log.d("DEFAULT APP ", "isAppAsDefaultDialer: " + telecom.getDefaultDialerPackage().toString());
-        Toast.makeText(this, telecom.getDefaultDialerPackage().toString(), Toast.LENGTH_LONG).show();
-
-        if (getApplicationContext().getPackageName().equals(telecom.getDefaultDialerPackage())) {
-            return true;
-        }*/
         return false;
     }
 

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,7 +15,6 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +28,6 @@ import com.example.contactapp_v3.repo.Repository;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     private FirebaseRecyclerAdapter adapter;
     private List<Contact> phoneContactList = null;
     private List<Contact> currentValueList = new ArrayList<>();
+    FloatingActionButton floatingActionButton;
 
 
-    private TextView textViewAddContact;
     private EditText editTextSearchContact;
     private ContactAddService contactAddService;
 
@@ -72,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     private DatabaseReference referenceTrash;
     private Repository repository;
 
-    private FloatingActionButton button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +86,6 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         contactAddService = new ContactAddService(this);
-
-        //textViewAddContact = findViewById(R.id.addContact);
-       // button = findViewById(R.id.buttonAddContact);
 
         detailsListener = this;
 
@@ -146,14 +139,17 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
             }
         });
 
-        /*textViewAddContact.setOnClickListener(new View.OnClickListener() {
+        //Add Contact
+        floatingActionButton = findViewById(R.id.buttonAddContact);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });
 
+        // Search contact
         editTextSearchContact.addTextChangedListener(new TextWatcher() {
             int textLength = 0;
             public void afterTextChanged(Editable s){}
@@ -192,18 +188,10 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         setRepeatingAsyncTask();
     }
 
+
     private void addToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            sendToStartPage();
-        }
     }
 
     private void setRepeatingAsyncTask() {
@@ -232,11 +220,6 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         timer.schedule(task, 0, 60 * 1000);
     }
 
-    private void sendToStartPage() {
-        Intent intent = new Intent(MainActivity.this, StartActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -247,10 +230,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
-        if (item.getItemId() == R.id.addContact) {
-            Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
-            startActivity(intent);
-        }
+
         if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);

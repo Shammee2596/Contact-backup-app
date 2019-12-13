@@ -86,7 +86,7 @@ public class ContactReader {
                 if (star.equals("1")) isFavorite = true;
 
                 contactList.add(new Contact(name, phoneNumber, emailAddress, isFavorite));
-                Log.e("Test", "Email: " + emailAddress + "  Name: " + name + "  Number: " + phoneNumber);
+             //   Log.e("Test", "Email: " + emailAddress + "  Name: " + name + "  Number: " + phoneNumber);
             }
 
             cursor.close();
