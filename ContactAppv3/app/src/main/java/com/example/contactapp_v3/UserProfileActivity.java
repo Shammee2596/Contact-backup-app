@@ -39,15 +39,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(uid);
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        /*databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     User user = postSnapshot.getValue(User.class);
-                    name.setText(user.getName());
+                    *//*name.setText(user.getName());
                     email.setText(user.getEmail());
-                    number.setText(user.getPhone());
+                    number.setText(user.getPhone());*//*
                 }
 
             }
@@ -56,7 +56,7 @@ public class UserProfileActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
     }

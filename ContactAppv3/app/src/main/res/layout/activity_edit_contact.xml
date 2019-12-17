@@ -32,14 +32,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:hint="First name" />
+            android:hint="First name"
+            android:backgroundTint="#4bb6ef"/>
 
         <EditText
             android:id="@+id/editContactLName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="Last name" />
+            android:hint="Last name"
+            android:backgroundTint="#4bb6ef"/>
 
         <EditText
             android:id="@+id/editContactNumber"
@@ -47,32 +49,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:hint="Phone number"
-            android:inputType="phone" />
+            android:inputType="phone"
+            android:backgroundTint="#4bb6ef"/>
 
         <EditText
             android:id="@+id/editContactEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="@string/email" />
+            android:hint="@string/email"
+            android:backgroundTint="#4bb6ef"/>
+
 
         <EditText
             android:id="@+id/editContactLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:hint="Label" />
+            android:hint="Label"
+            android:backgroundTint="#4bb6ef"/>
 
         <Button
             android:id="@+id/editContactButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorButton"
-            android:text="Save"
             android:textColor="#fff"
-            android:textSize="20dp" />
+            android:background="@drawable/buttonstyle"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SAVE"/>
+
     </LinearLayout>
-
-
 </RelativeLayout>

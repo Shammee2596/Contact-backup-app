@@ -36,7 +36,7 @@
         android:paddingStart="20dp"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:text="Thrash"
+        android:text="Trash"
         android:textSize="20sp"
         android:textColor="#000"
         />

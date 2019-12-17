@@ -87,11 +87,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TextView name, number;
+        Button circle_button;
         name = holder.name;
         number = holder.number;
+        circle_button = holder.circleButton;
 
         name.setText(contactList.get(position).getName());
         number.setText(contactList.get(position).getNumber());
+        circle_button.setText(String.valueOf(contactList.get(position).getName().toUpperCase().charAt(0)));
     }
 
     @Override
@@ -102,7 +105,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView name, number;
-        Button button;
+        Button button, circleButton;
 
         LinearLayout item_contact;
 
@@ -112,6 +115,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             name = itemView.findViewById(R.id.contact_name);
             number = itemView.findViewById(R.id.number);
             button = itemView.findViewById(R.id.contact_button);
+            circleButton = itemView.findViewById(R.id.circle_button);
 
         }
     }

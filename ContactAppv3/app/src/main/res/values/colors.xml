@@ -6,7 +6,7 @@
     <color name="colorAccent">#000</color>
 
    <!-- <color name="colorBackground">#2b2b2b</color>-->
-    <color name="colorTextView">#000</color>
-    <color name="colorButton">#494949</color>
+    <color name="colorTextView">#6002ee</color>
+    <color name="colorButton">#6002ee</color>
     <color name="black_overlay">#000</color>
 </resources>

@@ -52,6 +52,18 @@ public class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.ViewHolder> 
                 restoreListener.onRestoreClick(currentContact);
             }
         });
+
+
+        viewHolder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Contact currentContact = contactList.get(viewHolder.getAdapterPosition());
+                Toast.makeText(context, currentContact.getName(), Toast.LENGTH_LONG).show();
+                restoreListener.onDeleteClick(currentContact);
+            }
+        });
+
+
         viewHolder.item_contact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,6 +94,7 @@ public class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.ViewHolder> 
 
         TextView name, number;
         Button button;
+        Button deleteBtn;
 
         LinearLayout item_contact;
 
@@ -92,8 +105,10 @@ public class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.ViewHolder> 
             name = itemView.findViewById(R.id.contact_name1);
             number = itemView.findViewById(R.id.number1);
             button = itemView.findViewById(R.id.restore_button);
+            deleteBtn = itemView.findViewById(R.id.btn_delete);
         }
     }
+
 
     class RestoreDialogFragment extends DialogFragment {
 
@@ -113,6 +128,7 @@ public class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.ViewHolder> 
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             restoreListener.onRestoreClick(contact);
+                            //restoreListener.onContactRemoveFromTrash(contact);
                         }
                     })
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -122,4 +138,5 @@ public class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.ViewHolder> 
             return builder.create();
         }
     }
+
 }

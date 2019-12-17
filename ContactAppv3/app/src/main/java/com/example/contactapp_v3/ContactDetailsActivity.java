@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.operations.ContactRemoveService;
 import com.example.contactapp_v3.repo.Repository;
 import com.google.firebase.database.DatabaseReference;
 import static com.example.contactapp_v3.MainActivity.context;
@@ -34,12 +34,15 @@ public class ContactDetailsActivity extends AppCompatActivity {
     long id;
     ContentValues contentValues;
     private Menu menu;
-    private Button btnWhatsApp;
+    private TextView btnWhatsApp;
     private LinearLayout btnMessage;
     boolean isFav = false;
     DatabaseReference databaseReference;
     private Contact contact;
     private Repository repository;
+    private ContactRemoveService removeService;
+    private LinearLayout personCall;
+    private LinearLayout personMail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +55,14 @@ public class ContactDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Details");
 
+        removeService = new ContactRemoveService();
 
         tvname =  findViewById(R.id.prfile_displayName);
         tvphone = findViewById(R.id.profile_number);
         tvmail =  findViewById(R.id.prfile_Email);
+
+        personCall = findViewById(R.id.person_phone);
+        personMail = findViewById(R.id.person_mail);
 
         btnWhatsApp = findViewById(R.id.btn_whatsApp);
         btnMessage = findViewById(R.id.btn_message1);
@@ -74,7 +81,7 @@ public class ContactDetailsActivity extends AppCompatActivity {
                     .child(contact.get_id());
 
         }
-
+         btnWhatsApp.setText( contact.getNumber());
         btnWhatsApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,17 +100,24 @@ public class ContactDetailsActivity extends AppCompatActivity {
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentCall = new Intent(Intent.ACTION_CALL);
-               // Toast.makeText(context, "Enable call phone", Toast.LENGTH_LONG).show();
+               callNumber();
+            }
+        });
+        personCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callNumber();
+            }
+        });
 
-                intentCall.setData(Uri.parse("tel:"+contact.getNumber()));
-
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
-                        != PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(context, "Enable call phone in the settings", Toast.LENGTH_LONG).show();
-                }else {
-                    context.startActivity(intentCall);
-                }
+        personMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*final Intent intent = new Intent(Intent.ACTION_VIEW)
+                        .setType("plain/text")
+                        .setData(Uri.parse("bsse0812@iit.du.ac.bd"))
+                        .setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+                startActivity(intent);*/
             }
         });
     }
@@ -112,6 +126,19 @@ public class ContactDetailsActivity extends AppCompatActivity {
         Uri sms_uri = Uri.parse("smsto:" + contact.getNumber());
         Intent sms_intent = new Intent(Intent.ACTION_SENDTO, sms_uri);
         startActivity(sms_intent);
+    }
+    private void callNumber(){
+        Intent intentCall = new Intent(Intent.ACTION_CALL);
+        // Toast.makeText(context, "Enable call phone", Toast.LENGTH_LONG).show();
+
+        intentCall.setData(Uri.parse("tel:"+contact.getNumber()));
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED){
+            Toast.makeText(context, "Enable call phone in the settings", Toast.LENGTH_LONG).show();
+        }else {
+            context.startActivity(intentCall);
+        }
     }
 
     @Override
@@ -133,23 +160,38 @@ public class ContactDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         }
         if (item.getItemId() == R.id.menuItemFavouriteContact) {
-            contentValues = new ContentValues();
-            contentValues.put(ContactsContract.Contacts.STARRED, 1);
-            getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
-                    contentValues, ContactsContract.Contacts._ID + "=" + id, null);
-            Toast.makeText(ContactDetailsActivity.this,
-                    "Contact added to favourite", Toast.LENGTH_SHORT).show();
-            menu.getItem(1).setIcon(ContextCompat
-                    .getDrawable(this, R.drawable.ic_star_white));
-            contact.setFavourite(true);
-            this.repository.getUserReference().child("contacts")
-                    .child(contact.get_id()).setValue(contact);
-            this.repository.getUserGroupFavoriteReference()
-                    .push().setValue(contact);
+            if (contact.isFavourite()){
+               /* this.repository.getUserReference().child("contacts")
+                        .child(contact.get_id()).removeValue();*/
+                this.repository.getUserReference().child("contacts").
+                        child("groups").child("favorites").child(contact.get_id()).removeValue();
+                contact.setFavourite(false);
+                this.repository.getUserReference().child("contacts")
+                        .child(contact.get_id()).setValue(contact);
+                menu.getItem(1).setIcon(ContextCompat
+                        .getDrawable(this, R.drawable.ic_star));
+            }
+            else {
+                contentValues = new ContentValues();
+                contentValues.put(ContactsContract.Contacts.STARRED, 1);
+                getContentResolver().update(ContactsContract.Contacts.CONTENT_URI,
+                        contentValues, ContactsContract.Contacts._ID + "=" + id, null);
+                Toast.makeText(ContactDetailsActivity.this,
+                        "Contact added to favourite", Toast.LENGTH_SHORT).show();
+                menu.getItem(1).setIcon(ContextCompat
+                        .getDrawable(this, R.drawable.ic_star_white));
+                contact.setFavourite(true);
+
+                this.repository.getUserReference().child("contacts")
+                        .child(contact.get_id()).setValue(contact);
+                this.repository.getUserGroupFavoriteReference()
+                        .push().setValue(contact);
+            }
         }
         if (item.getItemId() == R.id.menuItemDeleteContact) {
             this.databaseReference.removeValue();
             this.repository.getUserReference().child("trash").push().setValue(this.contact);
+            removeService.removeFromStorage(this, this.contact);
             finish();
         }
         return false;

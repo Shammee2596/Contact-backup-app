@@ -2,6 +2,7 @@ package com.example.contactapp_v3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +38,15 @@ public class TrashActivity extends AppCompatActivity implements OnContactRestore
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trash);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow);
+
+        setTitle("Trash");
+
 
         recyclerView = findViewById(R.id.rv_trash_contacts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -90,5 +100,10 @@ public class TrashActivity extends AppCompatActivity implements OnContactRestore
     public boolean onContactRemoveFromTrash(Contact contact) {
         contactRemoveService.removeFromFirebaseTrash(contact);
         return true;
+    }
+
+    @Override
+    public void onDeleteClick(Contact contact) {
+        onContactRemoveFromTrash(contact);
     }
 }

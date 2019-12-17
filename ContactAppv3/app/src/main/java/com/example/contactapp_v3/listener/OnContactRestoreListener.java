@@ -6,4 +6,5 @@ public interface OnContactRestoreListener {
     void onRestoreClick(Contact contact);
     boolean onContactInsert(Contact contact);
     boolean onContactRemoveFromTrash(Contact contact);
+    void onDeleteClick(Contact contact);
 }

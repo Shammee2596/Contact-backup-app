@@ -15,7 +15,8 @@
         <activity android:name=".FavoriteContactActivity" />
         <activity android:name=".UserProfileActivity"
             android:parentActivityName=".SettingsActivity" />
-        <activity android:name=".TrashActivity" />
+        <activity android:name=".TrashActivity"
+            android:parentActivityName=".SettingsActivity"/>
         <activity android:name=".EditContactActivity"
             android:parentActivityName=".MainActivity"/>
         <activity
@@ -33,7 +34,8 @@
         <activity
             android:name=".AddContactActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RegisterActivity"
+            android:parentActivityName=".StartActivity"/>
         <activity android:name=".StartActivity" />
         <activity android:name=".MainActivity" />
 

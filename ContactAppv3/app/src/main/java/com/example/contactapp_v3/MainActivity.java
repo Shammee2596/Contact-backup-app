@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
     private DatabaseReference referenceContact;
     private DatabaseReference referenceTrash;
     private Repository repository;
-
+    private Button circleButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         contactAddService = new ContactAddService(this);
 
         detailsListener = this;
+        circleButton = findViewById(R.id.circle_button);
 
         editTextSearchContact = findViewById(R.id.editTextSearchContact);
 
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
 
         referenceContact = repository.getUserReference().child("contacts");
 
+        // Read from firebase and show contacts
         referenceContact.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                         contactList, detailsListener));
             }
 
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
 
         referenceTrueCaller = FirebaseDatabase.getInstance().getReference("Truecaller");
 
+        // READ Trash List Contact
         referenceTrash = repository.getUserReference().child("trash");
 
         referenceTrash.addValueEventListener(new ValueEventListener() {
@@ -188,6 +193,12 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         setRepeatingAsyncTask();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        recyclerView.setAdapter(new ContactAdapter(MainActivity.this,
+                contactList, detailsListener));
+    }
 
     private void addToolBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -266,6 +277,17 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
         }
     }
 
+    public String replace(String str, int index, char replace){
+        if(str==null){
+            return str;
+        }else if(index<0 || index>=str.length()){
+            return str;
+        }
+        char[] chars = str.toCharArray();
+        chars[index] = replace;
+        return String.valueOf(chars);
+    }
+
     @Override
     public void onContactDetails(Contact contact) {
         Intent intent = new Intent(MainActivity.this, ContactDetailsActivity.class);
@@ -314,8 +336,22 @@ public class MainActivity extends AppCompatActivity implements OnContactDetailsL
                     }
                     if (!found) {
                         String num = contact.getNumber();
+                        //num = contact.getNumber().replace("-", "");
+                        //num = contact.getNumber().replace(" ", "");
+                        char[] chars = num.toCharArray();
+                        String ss = "";
+                        for (int i = 0; i < chars.length; i++) {
+                            if (chars[i] == '-') continue;
+                            if (chars[i] == ' ') continue;
+                            if (chars[i] == '*') continue;
+                            if (chars[i] == '.') continue;
+                            if (chars[i] == '#') continue;
+                            if (chars[i] == ',') continue;
+                            ss += String.valueOf(chars[i]);
+                        }
+                        num = ss;
                         if(!contact.getNumber().contains("+88")) {
-                            num = "+88" + contact.getNumber();
+                            num = "+88" + num;
                         }
                         reference.push().setValue(contact);
                         referenceTrueCaller.child(num).push()

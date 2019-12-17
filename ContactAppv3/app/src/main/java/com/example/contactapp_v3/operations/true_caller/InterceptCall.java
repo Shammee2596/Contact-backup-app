@@ -67,7 +67,7 @@ public class InterceptCall extends BroadcastReceiver {
                             context.getSystemService(Context.NOTIFICATION_SERVICE);
                     final List<String> names = new ArrayList<>();
 
-                    System.out.println("incomingNumber : " + cnt + " " + incomingNumber);
+                    //System.out.println("incomingNumber : " + cnt + " " + incomingNumber);
                     listener = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -95,7 +95,7 @@ public class InterceptCall extends BroadcastReceiver {
 
     private void showNotification(NotificationManagerCompat compat, Context context, String number, List<String> names) {
         String allNames = "";
-        for (String name: names.subList(0, Math.min(names.size(), 3))){
+        for (String name: names.subList(0, Math.min(names.size(), 1))){
             allNames += name + "\n";
         }
         Notification notification = new NotificationCompat.Builder(context, "channel1")

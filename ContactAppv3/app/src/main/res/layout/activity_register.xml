@@ -3,6 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,14 +16,15 @@
         android:layout_marginRight="26dp"
         android:layout_centerInParent="true">
 
-        <TextView
+
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Sign_up_title"
             android:textAlignment="center"
             android:textColor="@color/colorTextView"
             android:textSize="30dp"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
 
         <EditText
             android:id="@+id/SignUpEmail"
@@ -77,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:linksClickable="true"
                 android:text="@string/already_have_account"
-                android:textColor="@color/colorTextView"
+                android:textColor="#000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </FrameLayout>

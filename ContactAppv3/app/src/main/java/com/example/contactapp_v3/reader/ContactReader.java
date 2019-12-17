@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.example.contactapp_v3.App;
 import com.example.contactapp_v3.models.Contact;
+import com.example.contactapp_v3.repo.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,10 @@ public class ContactReader {
 
         String phoneNumber="";
         String name;
+        Repository repository;
+        Contact contact;
 //        Contact contact = new Contact();
+        repository = Repository.getInstance();
 
 
         final String[] PROJECTION = {
@@ -81,11 +85,18 @@ public class ContactReader {
                 }
                 emails.close();
 
+
                 boolean isFavorite = false;
 
-                if (star.equals("1")) isFavorite = true;
+                if (star.equals("1")) {
+                    isFavorite = true;
+                }
 
-                contactList.add(new Contact(name, phoneNumber, emailAddress, isFavorite));
+
+                contact = new Contact(name, phoneNumber, emailAddress, isFavorite);
+                contactList.add(contact);
+
+
              //   Log.e("Test", "Email: " + emailAddress + "  Name: " + name + "  Number: " + phoneNumber);
             }
 

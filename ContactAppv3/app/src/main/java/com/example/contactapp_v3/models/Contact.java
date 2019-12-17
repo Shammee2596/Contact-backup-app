@@ -14,6 +14,15 @@ public class Contact implements Comparable<Contact>, Parcelable {
     private String userId;
     private boolean isFavourite = false;
     private String _id;
+    private String fav_id;
+
+    public String getFav_id() {
+        return fav_id;
+    }
+
+    public void setFav_id(String fav_id) {
+        this.fav_id = fav_id;
+    }
 
     public Contact() {}
 
